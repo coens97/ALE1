@@ -24,5 +24,10 @@ namespace Ale1.View
         {
             InitializeComponent();
         }
+
+        private void ButtonParse_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
