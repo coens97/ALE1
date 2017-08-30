@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ale1.Common
+namespace Ale1.Common.TreeNode
 {
-    public class Class1
+    public interface ITreeNode
     {
     }
 }
