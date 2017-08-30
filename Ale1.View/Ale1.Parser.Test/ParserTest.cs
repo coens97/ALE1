@@ -7,7 +7,7 @@ namespace Ale1.Parser.Test
     public class ParserTest
     {
         [TestMethod]
-        public void TestMethod1()
+        public void ParserTestAll()
         {
         }
     }

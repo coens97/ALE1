@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ale1.Common", "Ale1.Common\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ale1.Parser.Test", "Ale1.Parser.Test\Ale1.Parser.Test.csproj", "{6A4D794C-70B3-426C-8151-61FD9AEAF955}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C5F73ACF-4400-4C5F-922A-BDC5A018BF4E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +38,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6A4D794C-70B3-426C-8151-61FD9AEAF955} = {C5F73ACF-4400-4C5F-922A-BDC5A018BF4E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F6AB7302-38DF-4EE5-8E08-521691BA7C24}
