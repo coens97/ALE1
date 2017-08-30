@@ -1,5 +1,5 @@
 ﻿module Ale1.Parser.TextToTree
 
-let parse inputText : string =
+let Parse inputText : string =
     inputText
  

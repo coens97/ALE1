@@ -12,7 +12,7 @@ namespace Ale1.Parser.Test
             var vectors = ParserTestVectors.GetVectors;
             foreach (var test in vectors)
             {
-                var result = TextToTree.parse(test.Item1);
+                var result = TextToTree.Parse(test.Item1);
                 Assert.AreEqual(test.Item2, result, "blabla");
             }
         }
