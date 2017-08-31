@@ -38,7 +38,7 @@ let private splitComma (s:string) =
         | _ :: tail -> findComma nrBraces (pos + 1) tail // Matched any other character
     
     let commaPosition = [for c in s -> c] |> findComma 0 0 // String -> char list, then call recursive function with initial values
-    (s.Substring(0, commaPosition - 1), s.Substring(commaPosition, s.Length - commaPosition))
+    (s.Substring(0, commaPosition), s.Substring(commaPosition + 1, s.Length - (commaPosition + 1)))
 
 let rec private iterate (inputText : string) : ITreeNode =
     match inputText with
@@ -49,8 +49,10 @@ let rec private iterate (inputText : string) : ITreeNode =
             let left = iterate innerText
             upcast new TreeOperand(NodeValue = operand, Left = left)
         | _ -> // Others have both left and right node
-            let left = iterate innerText
-            upcast new TreeOperand(NodeValue = operand, Left = left)
+            let (leftText, rightText) = splitComma innerText
+            let left = iterate leftText
+            let right = iterate rightText
+            upcast new TreeOperand(NodeValue = operand, Left = left, Right = right)
     | _ -> // If there is no opperand, assume it is a variable
         upcast new TreeVariable(Name = inputText)
 
