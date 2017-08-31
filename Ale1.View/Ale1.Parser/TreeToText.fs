@@ -14,6 +14,8 @@ let private operandToText(operand : OperandValue) : string =
     | OperandValue.Or -> "|"
     | _ -> raise (new ArgumentException("Can't recognise enumuration value of OperandValue when parsing tree")) // No match
 
+// Itteration is a recursive function which "walks through" the tree
+// It returns a list of string, because of the assumption that list works best in F# recursion
 let rec private iteration (inputTree : ITreeNode) : string list = 
     match inputTree with
     | :? TreeVariable as v -> [ v.Name ] // When node match with a variable only return that

@@ -27,21 +27,6 @@ namespace Ale1.Parser.Test
                             Name = "b"
                         }
                     }),
-                // Basic OR operand with many spaces
-                new Tuple<string, ITreeNode>(
-                    "   |    (   a  ,   b   )    ",
-                    new TreeOperand
-                    {
-                        NodeValue = OperandValue.Or,
-                        Left = new TreeVariable
-                        {
-                            Name = "a"
-                        },
-                        Right = new TreeVariable
-                        {
-                            Name = "b"
-                        }
-                    }),
                 // Basic NOT operand
                 new Tuple<string, ITreeNode>(
                     "~(a)",
@@ -96,6 +81,27 @@ namespace Ale1.Parser.Test
                             }
                         }
                     })
+            };
+
+        // With these test vectors the input text is not the same the text constructed from the tree
+        public static Tuple<string, ITreeNode>[] GetSpecialVectors =>
+            new[]
+            {
+                // Basic OR operand with many spaces
+                new Tuple<string, ITreeNode>(
+                    "   |    (   a  ,   b   )    ",
+                    new TreeOperand
+                    {
+                        NodeValue = OperandValue.Or,
+                        Left = new TreeVariable
+                        {
+                            Name = "a"
+                        },
+                        Right = new TreeVariable
+                        {
+                            Name = "b"
+                        }
+                    }),
             };
     }
 }
