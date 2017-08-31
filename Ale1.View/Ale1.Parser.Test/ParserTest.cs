@@ -15,7 +15,10 @@ namespace Ale1.Parser.Test
             foreach (var test in vectors)
             {
                 var result = TextToTree.Parse(test.Item1);
-                Assert.AreEqual(test.Item2, result, "blabla");
+                var textResult = TreeToText.ToText(result);
+                var expectedTextResult = TreeToText.ToText(test.Item2);
+
+                Assert.AreEqual(expectedTextResult, textResult, "The expected Tree is not generated");
             }
         }
 
@@ -28,7 +31,7 @@ namespace Ale1.Parser.Test
                 var textResult = TreeToText.ToText(test.Item2);
 
                 Assert.AreEqual(test.Item1, textResult,
-                    $"The TreeToText method does not give the expected result");
+                    "The TreeToText method does not give the expected result");
                 Assert.AreNotEqual("A result never given", textResult, "Can't compare type string"); // If assumption holds that compare string works
             }
         }

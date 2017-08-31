@@ -1,7 +1,6 @@
 ﻿module Ale1.Parser.TreeToText
 
 open Ale1.Common.TreeNode
-open System.Text
 open System
 
 // Change enumeration to the according ASCII character
