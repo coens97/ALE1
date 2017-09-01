@@ -1,18 +1,7 @@
 ﻿using Ale1.Parser;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Ale1.View
 {
@@ -28,8 +17,22 @@ namespace Ale1.View
 
         private void ButtonParse_Click(object sender, RoutedEventArgs e)
         {
-            var text = textBoxInput.Text;
-            var tree = TextToTree.Parse(text);
+            labelWrongInput.Content = string.Empty;
+            try
+            {
+                GenerateGraph();
+            }
+            catch (ArgumentException ex) // Exceptions inside parser are ArgumentException
+            {
+                labelWrongInput.Content = ex.Message;
+            }
+        }
+
+        private void GenerateGraph()
+        {
+            var tree = TextToTree.Parse(textBoxInput.Text);
+            var dotText = TreeToDot.ToText(tree);
+            File.WriteAllLines("dot\\generated.dot", dotText);
         }
     }
 }

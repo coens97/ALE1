@@ -15,26 +15,33 @@ let private operandToText(operand : OperandValue) : string =
 
 // Itteration is a recursive function which "walks through" the tree
 // It returns a list of string, because of the assumption that list works best in F# recursion
-let rec private iteration (inputTree : ITreeNode) : string list = 
+let rec private iteration (inputTree : ITreeNode) (n : int) =
     match inputTree with
-    | :? TreeVariable as v -> [ v.Name ] // When node match with a variable only return that
+    | :? TreeVariable as v -> (n, [ "node" + n.ToString() + " [ label = \"" + v.Name + "\" ]" ]) // When node match with a variable only return that
     | :? TreeOperand as o->
         match o.NodeValue with // The NOT operand is the only without a right node
         | OperandValue.Not -> 
-            [operandToText o.NodeValue; "("] @
-            iteration o.Left @
-            [ ")" ]
+            let (_, stringList) = iteration o.Left (n + 1)
+            (n,
+                ["node" + n.ToString() + " [ label = \"" + operandToText o.NodeValue + "\" ]";
+                "node" + n.ToString() + " -- node" + (n + 1).ToString()] @
+                stringList)
         | _ ->
-            [operandToText o.NodeValue; "("] @
-            iteration o.Left @
-            [ "," ] @
-            iteration o.Right @
-            [ ")" ]
+            let (rightN, leftStringList) = iteration o.Left (n + 1)
+            let (_, rightStringList) = iteration o.Right (rightN + 1)
+            (n,
+                ["node" + n.ToString() + " [ label = \"" + operandToText o.NodeValue + "\" ]";
+                "node" + n.ToString() + " -- node" + (n + 1).ToString();
+                "node" + n.ToString() + " -- node" + (rightN + 1).ToString()] @
+                leftStringList @
+                rightStringList)
     | _ -> raise (new ArgumentException("Can't recognise ITreeNode type when parsing tree")) // No match
 
 let ToText (inputTree : ITreeNode) : string[] =
+    let (_, stringList) = iteration inputTree 0
+
     ["graph logic {" ; "node [ fontname = \"Arial\" ]"] @ // Add static first line of document
-    iteration inputTree @
+    stringList @
     ["}"] // Add last line of document
     |> List.toArray
     
