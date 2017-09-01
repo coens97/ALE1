@@ -14,6 +14,8 @@
                 <Label x:Name="labelWrongInput" Content="" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Foreground="Red" FontSize="11"/>
             </Grid>
         </GroupBox>
-        <GroupBox x:Name="groupBox1" Header="Output" Margin="10,84,10,10"/>
+        <GroupBox x:Name="groupBox1" Header="Output" Margin="10,84,10,10">
+            <Image x:Name="imageBox" Margin="10,10,10,10"/>
+        </GroupBox>
     </Grid>
 </Window>
