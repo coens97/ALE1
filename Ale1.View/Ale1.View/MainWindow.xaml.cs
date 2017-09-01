@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ale1.Parser;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,7 +28,8 @@ namespace Ale1.View
 
         private void ButtonParse_Click(object sender, RoutedEventArgs e)
         {
-
+            var text = textBoxInput.Text;
+            var tree = TextToTree.Parse(text);
         }
     }
 }

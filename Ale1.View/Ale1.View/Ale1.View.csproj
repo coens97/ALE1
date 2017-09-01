@@ -34,6 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FSharp.Core, Version=4.4.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -92,6 +93,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ale1.Common\Ale1.Common.csproj">
+      <Project>{60980792-67dd-4448-9e73-af1f3205a354}</Project>
+      <Name>Ale1.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ale1.Parser\Ale1.Parser.fsproj">
+      <Project>{87d83ad9-4c76-48ec-bc97-9757a0260bdd}</Project>
+      <Name>Ale1.Parser</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
