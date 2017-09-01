@@ -21,15 +21,15 @@ let rec private iteration (inputTree : ITreeNode) (n : int) =
     | :? TreeOperand as o->
         match o.NodeValue with // The NOT operand is the only without a right node
         | OperandValue.Not -> 
-            let (_, stringList) = iteration o.Left (n + 1)
-            (n,
+            let (m, stringList) = iteration o.Left (n + 1)
+            (m,
                 ["node" + n.ToString() + " [ label = \"" + operandToText o.NodeValue + "\" ]";
                 "node" + n.ToString() + " -- node" + (n + 1).ToString()] @
                 stringList)
         | _ ->
             let (rightN, leftStringList) = iteration o.Left (n + 1)
-            let (_, rightStringList) = iteration o.Right (rightN + 1)
-            (n,
+            let (m, rightStringList) = iteration o.Right (rightN + 1)
+            (m,
                 ["node" + n.ToString() + " [ label = \"" + operandToText o.NodeValue + "\" ]";
                 "node" + n.ToString() + " -- node" + (n + 1).ToString();
                 "node" + n.ToString() + " -- node" + (rightN + 1).ToString()] @
