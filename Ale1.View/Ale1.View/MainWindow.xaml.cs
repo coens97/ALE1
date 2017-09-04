@@ -26,7 +26,7 @@ namespace Ale1.View
             {
                 GenerateGraph();
             }
-            catch (NotFiniteNumberException ex) // Exceptions inside parser are ArgumentException
+            catch (ArgumentException ex) // Exceptions inside parser are ArgumentException
             {
                 labelWrongInput.Content = ex.Message;
             }
