@@ -1,15 +1,16 @@
 ﻿module Ale1.Functional.RandomTree
 open System
 
+let rand = Random()
 let private charsToString(input: char list) = // Converts a list of characters to a string
     String.Concat(Array.ofList(input))
 
 let private toBeUsedVariables (n : int) : char list = // Return a, b....
-    [1..n]
+    [0..(n - 1)]
     |> List.map (fun x -> (char ((int 'a') + x)))
 
 let private randomNext(b : int) (e: int) : int =
-    (new Random(Guid.NewGuid().GetHashCode())).Next(b, e)
+    rand.Next(b,e)
 
 let private randomSwap (left : char list) (right : char list) : char list * char list = 
     if randomNext 0 1 = 0 then
@@ -17,8 +18,8 @@ let private randomSwap (left : char list) (right : char list) : char list * char
     else
         (right, left)
 
-let private randomOperand : char =
-    match randomNext 0 3 with
+let private randomOperand(n : int) : char =
+    match n with
     | 0 -> '>'
     | 1 -> '='
     | 2 -> '&'
@@ -35,7 +36,7 @@ let private takeVariable  (alphabet: char list) : char list * char list =
     | _ -> raise(new Exception("Alphabet is empty"))
 
 let rec private iterate (alphabet: char list) (openVariables : int) : char list * char list =
-    if (randomNext 0 4 = 0 && List.length alphabet < 4) || List.length alphabet = openVariables then 
+    if (randomNext 0 (List.length alphabet) < 2) || List.length alphabet = openVariables then 
         takeVariable alphabet
     else
         if randomNext 0 4 = 0 then // small change to get not operand
@@ -44,7 +45,7 @@ let rec private iterate (alphabet: char list) (openVariables : int) : char list 
              res @
              [')'], alphabet)
         else
-            let operand = randomOperand
+            let operand = randomOperand (randomNext 0 3)
             let (firstLeaf, newAlphabet) = iterate alphabet (openVariables + 1)
             let (secondLeaf, newerAlphabet) = iterate newAlphabet openVariables
             let (left, right) = randomSwap firstLeaf secondLeaf
