@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 
-namespace Ale1.Parser.Test
+namespace Ale1.Functional.Test
 {
     [TestClass]
     public class ParserTest

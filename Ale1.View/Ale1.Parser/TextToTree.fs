@@ -1,4 +1,4 @@
-﻿module Ale1.Parser.TextToTree
+﻿module Ale1.Functional.TextToTree
 
 open Ale1.Common.TreeNode
 open System
@@ -21,7 +21,7 @@ let private  (|PrefixOperand|_|) (s:string) =
     | _ -> None // Didn't match any operator
 
 let private removeBraces (s:string) = // "(something)" -> "something"
-    if s.StartsWith("(") & s.EndsWith(")") then
+    if s.StartsWith("(") && s.EndsWith(")") then
         s.Substring(1, s.Length - 2)
     else
         raise (new ArgumentException("Expected an ( at the begining and ) at the end of this string: " + s))

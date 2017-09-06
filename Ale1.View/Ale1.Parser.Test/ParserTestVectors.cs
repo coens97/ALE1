@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ale1.Parser.Test
+namespace Ale1.Functional.Test
 {
     class ParserTestVectors
     {

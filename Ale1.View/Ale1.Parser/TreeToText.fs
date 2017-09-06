@@ -1,4 +1,4 @@
-﻿module Ale1.Parser.TreeToText
+﻿module Ale1.Functional.TreeToText
 
 open Ale1.Common.TreeNode
 open System

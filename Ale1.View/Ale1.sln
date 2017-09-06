@@ -5,11 +5,11 @@ VisualStudioVersion = 15.0.26730.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ale1.View", "Ale1.View\Ale1.View.csproj", "{E5CF8CFB-00CB-4342-9EF1-1C3C7AEB1F1D}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Ale1.Parser", "Ale1.Parser\Ale1.Parser.fsproj", "{87D83AD9-4C76-48EC-BC97-9757A0260BDD}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Ale1.Functional", "Ale1.Parser\Ale1.Functional.fsproj", "{87D83AD9-4C76-48EC-BC97-9757A0260BDD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ale1.Common", "Ale1.Common\Ale1.Common.csproj", "{60980792-67DD-4448-9E73-AF1F3205A354}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ale1.Parser.Test", "Ale1.Parser.Test\Ale1.Parser.Test.csproj", "{6A4D794C-70B3-426C-8151-61FD9AEAF955}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ale1.Functional.Test", "Ale1.Parser.Test\Ale1.Functional.Test.csproj", "{6A4D794C-70B3-426C-8151-61FD9AEAF955}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C5F73ACF-4400-4C5F-922A-BDC5A018BF4E}"
 EndProject

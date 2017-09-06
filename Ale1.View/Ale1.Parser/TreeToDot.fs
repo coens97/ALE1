@@ -1,4 +1,4 @@
-﻿module Ale1.Parser.TreeToDot
+﻿module Ale1.Functional.TreeToDot
 
 open Ale1.Common.TreeNode
 open System

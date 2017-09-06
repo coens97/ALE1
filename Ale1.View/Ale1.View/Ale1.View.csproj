@@ -103,9 +103,9 @@
       <Project>{60980792-67dd-4448-9e73-af1f3205a354}</Project>
       <Name>Ale1.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Ale1.Parser\Ale1.Parser.fsproj">
+    <ProjectReference Include="..\Ale1.Parser\Ale1.Functional.fsproj">
       <Project>{87d83ad9-4c76-48ec-bc97-9757a0260bdd}</Project>
-      <Name>Ale1.Parser</Name>
+      <Name>Ale1.Functional</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
