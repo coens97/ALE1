@@ -3,59 +3,52 @@
 open Ale1.Common.TreeNode
 open System
 
-// Shamelessly stolen from Stackoverflow: https://stackoverflow.com/questions/3722591/pattern-matching-on-the-beginning-of-a-string-in-f
-// It is an active pattern which matches the beggining of the string, return the rest of the string
-let private (|Prefix|_|) (p:string) (s:string) =
-    if s.StartsWith(p) then
-        Some(s.Substring(p.Length))
-    else
-        None
- // Active pattern to select which operand
-let private  (|PrefixOperand|_|) (s:string) =
+let private charsToString(input: char list) = // Converts a list of characters to a string
+    String.Concat(Array.ofList(input))
+
+// Active pattern to select which operand
+let private (|PrefixOperand|_|) (s:char list) = // Returns both the operand what is behind the operand
     match s with
-    | Prefix "~" rest -> Some(OperandValue.Not, rest)
-    | Prefix ">" rest -> Some(OperandValue.Implication, rest)
-    | Prefix "=" rest -> Some(OperandValue.BiImplication, rest)
-    | Prefix "&" rest -> Some(OperandValue.And, rest)
-    | Prefix "|" rest -> Some(OperandValue.Or, rest)
+    | '~' :: '(' :: tail  -> Some(OperandValue.Not, tail)
+    | '>' :: '(' ::  tail -> Some(OperandValue.Implication, tail)
+    | '=' :: '(' ::  tail -> Some(OperandValue.BiImplication, tail)
+    | '&' :: '(' ::  tail -> Some(OperandValue.And, tail)
+    | '|' :: '(' ::  tail -> Some(OperandValue.Or, tail)
     | _ -> None // Didn't match any operator
 
-let private removeBraces (s:string) = // "(something)" -> "something"
-    if s.StartsWith("(") && s.EndsWith(")") then
-        s.Substring(1, s.Length - 2)
-    else
-        raise (new ArgumentException("Expected an ( at the begining and ) at the end of this string: " + s))
-    
-let private splitComma (s:string) =
-    // findComma recursively finds the appropriate comma, count the braces to make sure the right comma is picked
-    let rec findComma (nrBraces: int) (pos: int) (s: char list) : int =
-        match s with
-        |[] -> raise (new ArgumentException("Could not find comma inside braces")) // Empty array, finished without finding
-        |'(' :: tail -> findComma (nrBraces + 1) (pos + 1) tail
-        |')':: tail -> findComma (nrBraces - 1) (pos + 1) tail
-        |',' :: _tail when nrBraces = 0 -> pos // Found the right comma, return position
-        |',' :: tail -> findComma nrBraces (pos + 1) tail
-        | _ :: tail -> findComma nrBraces (pos + 1) tail // Matched any other character
-    
-    let commaPosition = [for c in s -> c] |> findComma 0 0 // String -> char list, then call recursive function with initial values
-    (s.Substring(0, commaPosition), s.Substring(commaPosition + 1, s.Length - (commaPosition + 1)))
+let rec private splitVariable (s: char list) : char list * char list =
+    match s with
+    | ',':: _tail  -> ([], s)
+    | ')' ::  _tail -> ([], s)
+    | head :: tail -> 
+        let (var, rest) = splitVariable tail
+        ([head] @ var, rest)
+    | _ -> raise (new ArgumentException("Could not find the end of a variable. Is a , or ) missing?"))
 
-let rec private iterate (inputText : string) : ITreeNode =
+let rec private iterate (inputText : char list) : ITreeNode * char list =
     match inputText with
     | PrefixOperand (operand, rest) ->
-        let innerText = removeBraces rest
-        match operand with
-        | OperandValue.Not -> // Not only has left node
-            let left = iterate innerText
-            upcast new TreeOperand(NodeValue = operand, Left = left)
-        | _ -> // Others have both left and right node
-            let (leftText, rightText) = splitComma innerText
-            let left = iterate leftText
-            let right = iterate rightText
-            upcast new TreeOperand(NodeValue = operand, Left = left, Right = right)
-    | _ -> // If there is no opperand, assume it is a variable
-        upcast new TreeVariable(Name = inputText)
+        let (tree, rest) = parseOperand operand rest
+        match rest with
+        | ')' :: tail -> (tree, tail)
+        | _ -> raise (new ArgumentException("Expected a closing brace at:" + charsToString rest)) 
+    | _ -> // String does not start with an operand, so assume it is a variable
+        let (variable, tail) = splitVariable inputText
+        (upcast new TreeVariable(Name = charsToString variable), tail)
+and private parseOperand (operand: OperandValue) (inputText : char list) : ITreeNode * char list =
+    match operand with
+    | OperandValue.Not -> // Not, only has left node
+        let (left, tail) = iterate inputText
+        (upcast new TreeOperand(NodeValue = operand, Left = left), tail)
+    | _ -> 
+        let (left, rightNodeText) = iterate inputText
+        match rightNodeText with
+        | ',' :: rightText -> 
+            let (right, rest) = iterate rightText
+            (upcast new TreeOperand(NodeValue = operand, Left = left, Right = right), rest)
+        | _ -> raise (new ArgumentException("Expected a comma at:" + String.Concat(Array.ofList(rightNodeText))))
 
 let Parse (inputText : string) = // Called from outside
-    inputText.Replace(" ", "") 
-    |> iterate // Itterate is called without whitespaces
+    let noSpaces = inputText.Replace(" ", "")
+    let (tree, _tail) = [for c in noSpaces -> c] |> iterate // Itterate is called without whitespaces in char list format
+    tree
