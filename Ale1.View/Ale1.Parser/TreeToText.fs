@@ -35,3 +35,22 @@ let rec private iteration (inputTree : ITreeNode) : string list =
 let ToText (inputTree : ITreeNode) : string =
     iteration inputTree
     |> String.concat("") // Put the results together in one string
+
+// Same as above but in infix notation
+let rec private iterationInfix (inputTree : ITreeNode) : string list = 
+    match inputTree with
+    | :? TreeVariable as v -> [ v.Name ] // When node match with a variable only return that
+    | :? TreeOperand as o->
+        match o.NodeValue with // The NOT operand is the only without a right node
+        | OperandValue.Not -> 
+            [operandToText o.NodeValue] @
+            iteration o.Left
+        | _ ->
+            iteration o.Left @
+            [operandToText o.NodeValue] @
+            iteration o.Right
+    | _ -> raise (new ArgumentException("Can't recognise ITreeNode type when parsing tree")) // No match
+
+let ToTextInfix (inputTree : ITreeNode) : string =
+    iterationInfix inputTree
+    |> String.concat("") // Put the results together in one string

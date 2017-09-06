@@ -23,12 +23,16 @@ namespace Ale1.Functional.Test
         }
 
         [TestMethod]
-        public void ParserToText()
+        public void ParserToTextInfix()
         {
-            var vectors = ParserTestVectors.GetVectors;
-            foreach (var test in vectors)
+            var infuxTest = new Tuple<string, string>[]
             {
-                var textResult = TreeToText.ToText(test.Item2);
+                new Tuple<string, string>("~(abc)","~abc"),
+                new Tuple<string, string>("&(abc,bde)","abc&bde")
+            };
+            foreach (var test in infuxTest)
+            {
+                //var textResult = TreeToText.ToText(test.Item2);
 
                 Assert.AreEqual(test.Item1, textResult,
                     "The TreeToText method does not give the expected result");
