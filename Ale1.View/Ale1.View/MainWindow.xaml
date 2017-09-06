@@ -25,7 +25,9 @@
         </GroupBox>
         <TabControl x:Name="tabControl" Margin="10,123,10,10" Grid.Column="1">
             <TabItem Header="Truth table">
-                <Grid Background="#FFE5E5E5"/>
+                <Grid Background="#FFE5E5E5">
+                    <DataGrid x:Name="dataGridTruth"/>
+                </Grid>
             </TabItem>
         </TabControl>
     </Grid>
