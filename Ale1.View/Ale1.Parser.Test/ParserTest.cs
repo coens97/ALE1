@@ -38,17 +38,19 @@ namespace Ale1.Functional.Test
         {
             var infuxTest = new Tuple<string, string>[]
             {
-                new Tuple<string, string>("~(abc)","~abc"),
-                new Tuple<string, string>("&(abc,bde)","abc&bde")
+                new Tuple<string, string>("~(abc)","~(abc)"),
+                new Tuple<string, string>("&(abc,bde)","(abc&bde)"),
+                new Tuple<string, string>("&(~(dank memes),|(fontys,think bigger))","(~(dankmemes)&(fontys|thinkbigger))")
             };
-           /* foreach (var test in infuxTest)
+            foreach (var test in infuxTest)
             {
-                //var textResult = TreeToText.ToText(test.Item2);
+                var tree = TextToTree.Parse(test.Item1); // text -> tree -> text
+                var textResult = TreeToText.ToTextInfix(tree);
 
-                Assert.AreEqual(test.Item1, textResult,
+                Assert.AreEqual(test.Item2, textResult,
                     "The TreeToText method does not give the expected result");
                 Assert.AreNotEqual("A result never given", textResult, "Can't compare type string"); // If assumption holds that compare string works
-            }*/
+            }
         }
     }
 }

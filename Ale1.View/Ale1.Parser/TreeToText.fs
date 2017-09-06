@@ -44,11 +44,15 @@ let rec private iterationInfix (inputTree : ITreeNode) : string list =
         match o.NodeValue with // The NOT operand is the only without a right node
         | OperandValue.Not -> 
             [operandToText o.NodeValue] @
-            iteration o.Left
+            [ "(" ] @
+            iterationInfix o.Left @
+            [ ")" ]
         | _ ->
-            iteration o.Left @
+            [ "(" ] @
+            iterationInfix o.Left @
             [operandToText o.NodeValue] @
-            iteration o.Right
+            iterationInfix o.Right @
+            [ ")" ]
     | _ -> raise (new ArgumentException("Can't recognise ITreeNode type when parsing tree")) // No match
 
 let ToTextInfix (inputTree : ITreeNode) : string =
