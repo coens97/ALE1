@@ -31,7 +31,7 @@ let rec private iterate (inputText : char list) : ITreeNode * char list =
         let (tree, rest) = parseOperand operand rest
         match rest with
         | ')' :: tail -> (tree, tail)
-        | _ -> raise (new ArgumentException("Expected a closing brace at:" + charsToString rest)) 
+        | _ -> raise (new ArgumentException("Expected a closing brace at: " + charsToString rest)) 
     | _ -> // String does not start with an operand, so assume it is a variable
         let (variable, tail) = splitVariable inputText
         (upcast new TreeVariable(Name = charsToString variable), tail)
@@ -46,11 +46,11 @@ and private parseOperand (operand: OperandValue) (inputText : char list) : ITree
         | ',' :: rightText -> 
             let (right, rest) = iterate rightText
             (upcast new TreeOperand(NodeValue = operand, Left = left, Right = right), rest)
-        | _ -> raise (new ArgumentException("Expected a comma at:" + charsToString rightNodeText))
+        | _ -> raise (new ArgumentException("Expected a comma at: " + charsToString rightNodeText))
 
 let Parse (inputText : string) = // Called from outside
     let noSpaces = inputText.Replace(" ", "")
     let (tree, tail) = [for c in noSpaces -> c] |> iterate // Itterate is called without whitespaces in char list format
     if not (List.isEmpty tail) then
-        raise (new ArgumentException("Didn't parse the whole string:" + charsToString tail))
+        raise (new ArgumentException("Didn't parse the whole string: " + charsToString tail))
     tree
