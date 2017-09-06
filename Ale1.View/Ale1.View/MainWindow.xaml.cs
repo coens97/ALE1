@@ -65,5 +65,19 @@ namespace Ale1.View
             bitmap.EndInit();
             return bitmap;
         }
+
+        private void ButtonRandom_Click(object sender, RoutedEventArgs e)
+        {
+            int n;
+            if (int.TryParse(textBoxRandom.Text, out n))
+            {
+                textBoxInput.Text = RandomTree.Make(n);
+                ButtonParse_Click(sender, null);
+            }
+            else
+            {
+                MessageBox.Show("Insert number");
+            }
+        }
     }
 }
