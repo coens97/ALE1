@@ -16,9 +16,9 @@ let private (|PrefixOperand|_|) (s:char list) = // Returns both the operand what
     | '|' :: '(' ::  tail -> Some(OperandValue.Or, tail)
     | _ -> None // Didn't match any operator
 
-let rec private splitVariable (s: char list) : char list * char list =
+let rec private splitVariable (s: char list) : char list * char list = // Function will take string as a variable until a , or ) is found
     match s with
-    | ',':: _tail  -> ([], s)
+    | ',':: _tail  -> ([], s) // In these cases return the brace and the , to check later if the correct symbol is used
     | ')' ::  _tail -> ([], s)
     | head :: tail -> 
         let (var, rest) = splitVariable tail
@@ -46,9 +46,11 @@ and private parseOperand (operand: OperandValue) (inputText : char list) : ITree
         | ',' :: rightText -> 
             let (right, rest) = iterate rightText
             (upcast new TreeOperand(NodeValue = operand, Left = left, Right = right), rest)
-        | _ -> raise (new ArgumentException("Expected a comma at:" + String.Concat(Array.ofList(rightNodeText))))
+        | _ -> raise (new ArgumentException("Expected a comma at:" + charsToString rightNodeText))
 
 let Parse (inputText : string) = // Called from outside
     let noSpaces = inputText.Replace(" ", "")
-    let (tree, _tail) = [for c in noSpaces -> c] |> iterate // Itterate is called without whitespaces in char list format
+    let (tree, tail) = [for c in noSpaces -> c] |> iterate // Itterate is called without whitespaces in char list format
+    if not (List.isEmpty tail) then
+        raise (new ArgumentException("Didn't parse the whole string:" + charsToString tail))
     tree

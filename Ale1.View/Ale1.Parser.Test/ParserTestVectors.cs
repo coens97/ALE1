@@ -103,5 +103,16 @@ namespace Ale1.Functional.Test
                         }
                     }),
             };
+
+        public static string[] GetSyntaxErrorVectors =>
+            new[]
+            {
+                "&(a)b)",
+                "~(a,b)",
+                "|(a)",
+                "&,a,b)",
+                "&(a,b,",
+                "&(a,~(b)))"
+            };
     }
 }

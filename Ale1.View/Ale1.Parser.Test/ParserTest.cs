@@ -23,6 +23,17 @@ namespace Ale1.Functional.Test
         }
 
         [TestMethod]
+        public void ParserTestSyntax() // test for syntax errors
+        {
+            var vectors = ParserTestVectors.GetSyntaxErrorVectors;
+            foreach (var test in vectors)
+            {
+                Assert.ThrowsException<ArgumentException>(() => TextToTree.Parse(test), 
+                    $"Syntax error should have been given for: {test}");
+            }
+        }
+
+        [TestMethod]
         public void ParserToTextInfix()
         {
             var infuxTest = new Tuple<string, string>[]
