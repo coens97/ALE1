@@ -21,7 +21,7 @@
     <Tailcalls>false</Tailcalls>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <WarningLevel>3</WarningLevel>
+    <WarningLevel>1</WarningLevel>
     <DocumentationFile>bin\$(Configuration)\$(AssemblyName).XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -50,6 +50,7 @@
   </Choose>
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
+	<Compile Include="BitarrayUtility.fs" />
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="TextToTree.fs" />
     <None Include="Script.fsx" />
@@ -58,7 +59,7 @@
     <Compile Include="TreeToDot.fs" />
     <Compile Include="TreeToTruthTable.fs" />
     <Compile Include="RandomTree.fs" />
-    <Compile Include="BitarrayUtility.fs" />
+    
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
