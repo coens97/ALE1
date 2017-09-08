@@ -24,5 +24,9 @@ let AllTreeVariables(inputTree : ITreeNode) : string list =
     |> List.distinct
     |> List.sortWith (fun a b -> String.Compare(a, b))
 
+let private CreateHeaderToValueMapping (names : string list) (values : BitArray) =
+    Seq.zip names names
+    |> dict
 
-
+let TestOnTree (inputTree : ITreeNode) (values : BitArray) = 
+    values

@@ -7,7 +7,12 @@ let IntToBits (n : int) (count : int) : BitArray =
     array.Length <- count
     array
 
-let BitsToString (inputBits : BitArray) : string = 
+let BitToSeq (inputBits : BitArray) = 
     [0..(inputBits.Length - 1)] // Shamelessly making a "for loop"
-    |> List.map(fun x-> if inputBits.Get(x) then "1" else "0")
+    |> Seq.map(fun x-> inputBits.Get(x))
+
+let BitsToString (inputBits : BitArray) : string = 
+    inputBits
+    |> BitToSeq
+    |> Seq.map(fun x-> if x then "1" else "0")
     |> String.concat("")
