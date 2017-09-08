@@ -1,9 +1,13 @@
-﻿using Ale1.Functional;
+﻿using Ale1.Common.TreeNode;
+using Ale1.Functional;
 using System;
+using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -44,6 +48,8 @@ namespace Ale1.View
             imageBox.Source = null;
             imageBox.Source = GetImageSource();
 
+            // Show truthtable
+            ShowTruthtable(tree);
         }
 
         private void RunDotCommand()
@@ -77,6 +83,43 @@ namespace Ale1.View
             else
             {
                 MessageBox.Show("Insert number");
+            }
+        }
+
+        private void ShowTruthtable(ITreeNode tree)
+        {
+            var truthtable = TreeToTruthTable.CreateTruthTable(tree);
+
+            dataGridTruth.Columns.Clear();
+            dataGridTruth.Items.Clear();
+            // Add headers to datagrid
+            var headerId = 0;
+            foreach (var header in truthtable.Headers)
+            {
+                dataGridTruth.Columns.Add(
+                    new DataGridTextColumn { Header = header, Binding = new Binding("[" + headerId + "]")
+                });
+                headerId++;
+            }
+
+            dataGridTruth.Columns.Add(new DataGridTextColumn { Header = "Result", Binding = new Binding("[" + headerId + "]")});
+
+            // fill rows
+            var rowCount = truthtable.Values.Length;
+            var headerCount = truthtable.Headers.Length; // result column is not included
+            for (var i = 0; i < rowCount; i++)
+            {
+                var variableBits = BitarrayUtility.IntToBits(headerCount, i);
+                var rowValues = new string[headerCount + 1];
+                int j = 0;
+                foreach (var bit in BitarrayUtility.BitToSeq(variableBits))
+                {
+                    rowValues[j] = bit ? "1" : "0";
+                    j++;
+                }
+
+                rowValues[j] = truthtable.Values.Get(i) ? "1" : "0";
+                dataGridTruth.Items.Add(rowValues);
             }
         }
     }
