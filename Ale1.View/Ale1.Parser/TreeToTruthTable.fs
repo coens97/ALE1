@@ -44,7 +44,7 @@ let private TestLogic (nodeValue : OperandValue) (values : bool * bool) =
         match values with
         | (true, true) -> true
         | (false, false) -> true
-        | (_, _) -> true
+        | (_, _) -> false
     | OperandValue.And ->
         match values with
         | (true, true) -> true
@@ -69,4 +69,3 @@ let TestTreeValues (inputTree : ITreeNode) (values : BitArray) =
     let headers = AllTreeVariables inputTree
     let headerToValue = CreateHeaderToValueMapping headers values
     IterateTestTree inputTree headerToValue
-    values

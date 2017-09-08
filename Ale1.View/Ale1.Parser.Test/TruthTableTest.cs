@@ -33,7 +33,7 @@ namespace Ale1.Parser.Test
         }
 
         [TestMethod]
-        public void TestBitArray()
+        public void TestBitArraySring()
         {
             var tests = new Tuple<int, int, string>[] // Digit, length, expected
             {
@@ -53,9 +53,9 @@ namespace Ale1.Parser.Test
         }
 
         [TestMethod]
-        public void TestBitArrayBidirectional()
+        public void TestBitArraySringBidirectional()
         {
-            var tests = new []
+            var tests = new[]
             {
                 "10",
                 "01",
@@ -70,6 +70,33 @@ namespace Ale1.Parser.Test
                 var bits = BitarrayUtility.StringToBits(test);
                 var newString = BitarrayUtility.BitsToString(bits);
                 Assert.AreEqual(test, newString);
+            }
+        }
+
+        [TestMethod]
+        public void TestTruthInTree()
+        {
+            // input string, testbits, bool expected results
+            // testbits are alphabetical
+            var tests = new Tuple<string, string, bool>[]
+            {
+                new Tuple<string, string, bool>("&(a,b)", "11", true),
+                new Tuple<string, string, bool>("&(a,b)", "01", false),
+                new Tuple<string, string, bool>("&(a,a)", "1", true),
+                new Tuple<string, string, bool>("~(a)", "1", false),
+                new Tuple<string, string, bool>("~(|(a,b))", "00", true),
+                new Tuple<string, string, bool>("~(|(a,b))", "10", false),
+                new Tuple<string, string, bool>("&(&(a,b),|(c,d))", "1110", true),
+                new Tuple<string, string, bool>("~(|(&(a,b),>(b,=(c,d))))", "0110", true)
+            };
+
+            foreach (var test in tests)
+            {
+                var tree = TextToTree.Parse(test.Item1);
+                var bits = BitarrayUtility.StringToBits(test.Item2);
+                var result = TreeToTruthTable.TestTreeValues(tree, bits);
+                Assert.AreEqual(test.Item3, result,
+                    $"{test.Item1} with inputs {test.Item2} expected {test.Item3}");
             }
         }
     }
