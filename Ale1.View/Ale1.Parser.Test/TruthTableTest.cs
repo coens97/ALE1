@@ -51,5 +51,26 @@ namespace Ale1.Parser.Test
                 Assert.AreEqual(test.Item3, BitarrayUtility.BitsToString(bits));
             }
         }
+
+        [TestMethod]
+        public void TestBitArrayBidirectional()
+        {
+            var tests = new []
+            {
+                "10",
+                "01",
+                "1111",
+                "0010100",
+                "00001",
+                "100010"
+            };
+
+            foreach (var test in tests)
+            {
+                var bits = BitarrayUtility.StringToBits(test);
+                var newString = BitarrayUtility.BitsToString(bits);
+                Assert.AreEqual(test, newString);
+            }
+        }
     }
 }

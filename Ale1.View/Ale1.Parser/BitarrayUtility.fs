@@ -16,3 +16,10 @@ let BitsToString (inputBits : BitArray) : string =
     |> BitToSeq
     |> Seq.map(fun x-> if x then "1" else "0")
     |> String.concat("")
+
+let StringToBits (inputString : string) : BitArray = 
+    let values = 
+        [for c in inputString -> c]
+        |> Seq.map(fun x-> x = '1')
+        |> Seq.toArray
+    new BitArray(values)
