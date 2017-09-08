@@ -58,6 +58,7 @@
     <Compile Include="TreeToDot.fs" />
     <Compile Include="TreeToTruthTable.fs" />
     <Compile Include="RandomTree.fs" />
+    <Compile Include="BitarrayUtility.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />

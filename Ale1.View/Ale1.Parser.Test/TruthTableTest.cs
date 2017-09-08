@@ -26,9 +26,29 @@ namespace Ale1.Parser.Test
             {
                 var tree = TextToTree.Parse(test.Item1);
                 var results = TreeToTruthTable.AllTreeVariables(tree);
-                Assert.IsTrue(Enumerable.SequenceEqual(test.Item2, results), 
+                Assert.IsTrue(Enumerable.SequenceEqual(test.Item2, results),
                     $"To tree variable doesn't give expected result, expected [{string.Join(",", test.Item2)}] but got {results.ToString()}");
                 Assert.IsFalse(Enumerable.SequenceEqual(test.Item2, new[] { "This should always fail" }), "Compare lists fails");
+            }
+        }
+
+        [TestMethod]
+        public void TestBitArray()
+        {
+            var tests = new Tuple<int, int, string>[] // Digit, length, expected
+            {
+                new Tuple<int, int, string>(5, 4, "1010"),
+                new Tuple<int, int, string>(5, 10, "1010000000"),
+                new Tuple<int, int, string>(1, 1, "1"),
+                new Tuple<int, int, string>(0, 1, "0"),
+                new Tuple<int, int, string>(7, 3, "111")
+            };
+
+            foreach (var test in tests)
+            {
+                var bits = BitarrayUtility.IntToBits(test.Item1, test.Item2);
+                Assert.AreEqual(test.Item2, bits.Count);
+                Assert.AreEqual(test.Item3, BitarrayUtility.BitsToString(bits));
             }
         }
     }

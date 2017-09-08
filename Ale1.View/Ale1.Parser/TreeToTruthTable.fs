@@ -3,7 +3,9 @@
 open Ale1.Common.TreeNode
 open System
 open System.Linq
+open System.Collections
 
+// Recursively getall tree variables
 let rec private AllTreeVariablesItteration(inputTree : ITreeNode) : string list = 
     match inputTree with
     | :? TreeVariable as v -> [v.Name] // When node match with a variable only return that
@@ -21,3 +23,6 @@ let AllTreeVariables(inputTree : ITreeNode) : string list =
     |> AllTreeVariablesItteration
     |> List.distinct
     |> List.sortWith (fun a b -> String.Compare(a, b))
+
+
+

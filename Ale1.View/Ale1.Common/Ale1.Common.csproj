@@ -45,6 +45,7 @@
     <Compile Include="TreeNode\OperandValue.cs" />
     <Compile Include="TreeNode\TreeOperand.cs" />
     <Compile Include="TreeNode\TreeVariable.cs" />
+    <Compile Include="TruthTable\TruthTable.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
