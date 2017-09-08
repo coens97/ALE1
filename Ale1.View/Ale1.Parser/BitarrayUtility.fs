@@ -2,7 +2,7 @@
 
 open System.Collections
 
-let IntToBits (n : int) (count : int) : BitArray =
+let IntToBits (count : int) (n : int) : BitArray =
     let array = new BitArray([| n |])
     array.Length <- count
     array
@@ -18,8 +18,7 @@ let BitsToString (inputBits : BitArray) : string =
     |> String.concat("")
 
 let StringToBits (inputString : string) : BitArray = 
-    let values = 
-        [for c in inputString -> c]
-        |> Seq.map(fun x-> x = '1')
-        |> Seq.toArray
-    new BitArray(values)
+    [for c in inputString -> c] // To chars
+    |> Seq.map(fun x-> x = '1') // To booleans
+    |> Seq.toArray // To bool array
+    |> BitArray // To bits

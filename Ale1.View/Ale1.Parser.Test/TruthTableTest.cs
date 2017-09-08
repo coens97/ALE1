@@ -46,7 +46,7 @@ namespace Ale1.Parser.Test
 
             foreach (var test in tests)
             {
-                var bits = BitarrayUtility.IntToBits(test.Item1, test.Item2);
+                var bits = BitarrayUtility.IntToBits(test.Item2, test.Item1);
                 Assert.AreEqual(test.Item2, bits.Count);
                 Assert.AreEqual(test.Item3, BitarrayUtility.BitsToString(bits));
             }
@@ -94,9 +94,35 @@ namespace Ale1.Parser.Test
             {
                 var tree = TextToTree.Parse(test.Item1);
                 var bits = BitarrayUtility.StringToBits(test.Item2);
-                var result = TreeToTruthTable.TestTreeValues(tree, bits);
+                var result = TreeToTruthTable.TestTreeValue(tree, bits);
                 Assert.AreEqual(test.Item3, result,
                     $"{test.Item1} with inputs {test.Item2} expected {test.Item3}");
+            }
+        }
+
+        [TestMethod]
+        public void TestTruthTable()
+        {
+            // input string, testbits, bool expected results
+            // testbits are alphabetical
+            var tests = new Tuple<string, string>[]
+            {
+                new Tuple<string, string>("&(a,b)", "0001"),
+                new Tuple<string, string>("|(a,b)", "0111"),
+                new Tuple<string, string>("~(a)", "10"),
+                new Tuple<string, string>(">(a,b)", "1011"),
+                new Tuple<string, string>("=(a,b)", "1001"),
+                new Tuple<string, string>("&(|(a,a),b)", "0001"),
+                new Tuple<string, string>("&(=(a,b),c)", "00001001")
+            };
+
+            foreach (var test in tests)
+            {
+                var tree = TextToTree.Parse(test.Item1);
+                var truthtable = TreeToTruthTable.CreateTruthTable(tree);
+                var bits = BitarrayUtility.BitsToString(truthtable.Values);
+                Assert.AreEqual(test.Item2, bits,
+                    $"Truthtable is not as expected for {test.Item1}");
             }
         }
     }

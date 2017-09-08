@@ -5,6 +5,7 @@ open Ale1.Functional.BitarrayUtility
 open System
 open System.Collections
 open System.Runtime.InteropServices
+open Ale1.Common.TruthTable
 
 // Recursively getall tree variables
 let rec private AllTreeVariablesItteration(inputTree : ITreeNode) : string list = 
@@ -19,14 +20,15 @@ let rec private AllTreeVariablesItteration(inputTree : ITreeNode) : string list 
             AllTreeVariablesItteration o.Right
     | _ -> raise (new ArgumentException("Can't recognise ITreeNode type when parsing tree")) // No match
 
-let AllTreeVariables(inputTree : ITreeNode) : string list =
+let AllTreeVariables(inputTree : ITreeNode) : string array =
     inputTree
     |> AllTreeVariablesItteration
     |> List.distinct
     |> List.sortWith (fun a b -> String.Compare(a, b))
+    |> List.toArray
 
 // Generate dictionary; between the variable as string and boolean value
-let private CreateHeaderToValueMapping (names : string list) (values : BitArray) =
+let private CreateHeaderToValueMapping (names : string array) (values : BitArray) =
     values 
     |> BitToSeq // To sequence of booleans
     |> Seq.zip names // put names with the values together
@@ -65,7 +67,25 @@ let rec private IterateTestTree (inputTree : ITreeNode) (headerToValue : Generic
          IterateTestTree o.Right headerToValue)
          |> TestLogic operand
 
-let TestTreeValues (inputTree : ITreeNode) (values : BitArray) = 
-    let headers = AllTreeVariables inputTree
+let private TestTreeBits (inputTree : ITreeNode) (headers : string array) (values : BitArray) = 
     let headerToValue = CreateHeaderToValueMapping headers values
     IterateTestTree inputTree headerToValue
+
+let TestTreeValue (inputTree : ITreeNode) (values : BitArray) = 
+    let headers = AllTreeVariables inputTree
+    TestTreeBits inputTree headers values
+
+let CreateTruthTable (inputTree : ITreeNode) =
+    let headers = AllTreeVariables inputTree // Get a list of variables
+    let headerCount = Array.length headers
+    let count =  int(2.0 ** float(headerCount)) - 1 // float is required for the Pow method
+    
+    let truthtableValues = 
+        [0..count]
+        |> List.map(fun  x ->
+            x
+            |> BitarrayUtility.IntToBits headerCount
+            |> TestTreeBits inputTree headers)
+        |> List.toArray
+        |> BitArray
+    new TruthTable(Headers = headers, Values = truthtableValues)
