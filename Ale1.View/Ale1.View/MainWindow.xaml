@@ -26,9 +26,10 @@
         <TabControl x:Name="tabControl" Margin="10,123,10,10" Grid.Column="1">
             <TabItem Header="Truth table">
                 <Grid Background="#FFE5E5E5">
-                    <DataGrid x:Name="dataGridTruth" IsReadOnly="True"/>
+                    <DataGrid x:Name="dataGridTruth" IsReadOnly="True" Margin="0,17,0,0"/>
                 </Grid>
             </TabItem>
         </TabControl>
+        <Label x:Name="labelHex" Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="10,145,0,0" VerticalAlignment="Top" RenderTransformOrigin="2.351,0.385"/>
     </Grid>
 </Window>

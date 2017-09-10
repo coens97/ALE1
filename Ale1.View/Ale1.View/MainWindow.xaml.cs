@@ -92,6 +92,8 @@ namespace Ale1.View
 
             dataGridTruth.Columns.Clear();
             dataGridTruth.Items.Clear();
+            // Show hex
+            labelHex.Content = BitarrayUtility.BitsToHex(truthtable.Values);
             // Add headers to datagrid
             var headerId = 0;
             foreach (var header in truthtable.Headers)
