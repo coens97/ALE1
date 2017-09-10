@@ -74,6 +74,29 @@ namespace Ale1.Parser.Test
         }
 
         [TestMethod]
+        public void TestHex()
+        {
+            // input string, testbits, bool expected results
+            // testbits are alphabetical
+            var tests = new Tuple<string, string>[]
+            {
+                new Tuple<string, string>(string.Join("", "10100010".Reverse()), "A2"), // Test from document is reversed 
+                new Tuple<string, string>("10", "01"),
+                new Tuple<string, string>("101", "05"),
+                new Tuple<string, string>("11111111", "FF"),
+                new Tuple<string, string>("111111111", "FF01")
+            };
+
+            foreach (var test in tests)
+            {
+                var bits = BitarrayUtility.StringToBits(test.Item1);
+                var hex = BitarrayUtility.BitsToHex(bits);
+                Assert.AreEqual(test.Item2, hex,
+                    $"Bits to hex didn't get expected for {test.Item1}");
+            }
+        }
+
+        [TestMethod]
         public void TestTruthInTree()
         {
             // input string, testbits, bool expected results
