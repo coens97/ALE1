@@ -93,7 +93,8 @@ namespace Ale1.View
             dataGridTruth.Columns.Clear();
             dataGridTruth.Items.Clear();
             // Show hex
-            labelHex.Content = BitarrayUtility.BitsToHex(truthtable.Values);
+            textBoxTruthTable.Text = BitarrayUtility.BitsToHex(truthtable.Values);
+            textBoxInfix.Text = TreeToText.ToTextInfix(tree);
             // Add headers to datagrid
             var headerId = 0;
             foreach (var header in truthtable.Headers)

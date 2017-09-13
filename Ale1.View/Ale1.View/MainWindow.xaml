@@ -24,9 +24,18 @@
             <Image x:Name="imageBox" Margin="10,10,10,10"/>
         </GroupBox>
         <TabControl x:Name="tabControl" Margin="10,123,10,10" Grid.Column="1">
+            <TabItem Header="Strings">
+                <Grid Background="#FFE5E5E5">
+                    <TextBox x:Name="textBoxInfix" Height="23" Margin="10,36,10,0" TextWrapping="Wrap" VerticalAlignment="Top" IsReadOnly="True"/>
+                    <Label x:Name="label" Content="Infix" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                    <Label x:Name="label_Copy" Content="Truth table" HorizontalAlignment="Left" Margin="10,64,0,0" VerticalAlignment="Top"/>
+                    <TextBox x:Name="textBoxTruthTable" Height="23" Margin="10,95,10,0" TextWrapping="Wrap" VerticalAlignment="Top" IsReadOnly="True"/>
+
+                </Grid>
+            </TabItem>
             <TabItem Header="Truth table">
                 <Grid Background="#FFE5E5E5">
-                    <DataGrid x:Name="dataGridTruth" IsReadOnly="True" Margin="0,17,0,0"/>
+                    <DataGrid x:Name="dataGridTruth" IsReadOnly="True"/>
                 </Grid>
             </TabItem>
         </TabControl>
