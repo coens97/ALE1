@@ -1,5 +1,6 @@
 ﻿using Ale1.Common.TreeNode;
 using Ale1.Functional;
+using Microsoft.FSharp.Core;
 using System;
 using System.Data;
 using System.Diagnostics;
@@ -74,8 +75,7 @@ namespace Ale1.View
 
         private void ButtonRandom_Click(object sender, RoutedEventArgs e)
         {
-            int n;
-            if (int.TryParse(textBoxRandom.Text, out n))
+            if (int.TryParse(textBoxRandom.Text, out int n))
             {
                 textBoxInput.Text = RandomTree.Make(n);
                 ButtonParse_Click(sender, null);
@@ -102,12 +102,19 @@ namespace Ale1.View
                 dataGridTruth.Columns.Add(
                     new DataGridTextColumn { Header = header, Binding = new Binding("[" + headerId + "]")
                 });
+
+                dataGridSimpleTruth.Columns.Add(
+                    new DataGridTextColumn
+                    {
+                        Header = header, Binding = new Binding("[" + headerId + "]")
+                    });
                 headerId++;
             }
 
             dataGridTruth.Columns.Add(new DataGridTextColumn { Header = "Result", Binding = new Binding("[" + headerId + "]")});
-
-            // fill rows
+            dataGridSimpleTruth.Columns.Add(new DataGridTextColumn { Header = "Result", Binding = new Binding("[" + headerId + "]") });
+            
+            // fill rows full truth table
             var rowCount = truthtable.Values.Length;
             var headerCount = truthtable.Headers.Length; // result column is not included
             for (var i = 0; i < rowCount; i++)
@@ -123,6 +130,29 @@ namespace Ale1.View
 
                 rowValues[j] = truthtable.Values.Get(i) ? "1" : "0";
                 dataGridTruth.Items.Add(rowValues);
+            }
+            // simple truth table
+            var simpleTruthtable = TruthTableSimplifier.toSimpleTruthTable(truthtable);
+
+            foreach (var row in simpleTruthtable.Rows)
+            {
+                var rowValues = new string[headerCount + 1];
+                int j = 0;
+                foreach (var bit in row.Variables)
+                {
+                    // Not so pretty way to check if optional type has value
+                    if (FSharpOption<bool>.get_IsSome(bit))
+                    {
+                        rowValues[j] = bit.Value ? "1" : "0";
+                    }
+                    else
+                    {
+                        rowValues[j] = "*";
+                    }
+                    j++;
+                }
+                rowValues[j] = row.Result ? "1" : "0";
+                dataGridSimpleTruth.Items.Add(rowValues);
             }
         }
     }

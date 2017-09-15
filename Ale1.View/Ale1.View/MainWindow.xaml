@@ -38,6 +38,11 @@
                     <DataGrid x:Name="dataGridTruth" IsReadOnly="True"/>
                 </Grid>
             </TabItem>
+            <TabItem Header="Simple truth table">
+                <Grid Background="#FFE5E5E5">
+                    <DataGrid x:Name="dataGridSimpleTruth" IsReadOnly="True"/>
+                </Grid>
+            </TabItem>
         </TabControl>
         <Label x:Name="labelHex" Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="10,145,0,0" VerticalAlignment="Top" RenderTransformOrigin="2.351,0.385"/>
     </Grid>
