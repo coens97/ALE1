@@ -21,10 +21,28 @@ let private toSimpleRows  (headerCount : int) (input : BitArray) =
     |> Seq.zip rows 
     |> Seq.map (fun (x, y) -> 
         new SimpleTruthTableRow(Variables = x, Result = y))
-    |> Seq.toArray
+    |> Seq.toList
+
+let rec private iterate (a : int) (b : int) (count : int) (rows : SimpleTruthTableRow list) =
+    let newRows = rows
+
+    // Call next iteration
+    if b + 1 = count then
+        if a + 2 = count then
+            newRows
+        else
+            iterate (a + 1) (b + 1) count newRows
+    else
+        iterate a (b + 1) count newRows
+
+let private simplifyRows (count : int) (rows : SimpleTruthTableRow list) = 
+    iterate 0 1 count rows
 
 let toSimpleTruthTable (table : TruthTable) = 
     let headerCount = table.Headers.Length
+    let rows = 
+        toSimpleRows headerCount table.Values
+        |> simplifyRows headerCount
+        |> List.toArray
 
-    let rows = toSimpleRows headerCount table.Values
     new SimpleTruthTable(Headers = table.Headers, Rows = rows)
