@@ -4,13 +4,14 @@ open System.Collections
 open Ale1.Common.TruthTable
 
 // From the full bitarray result to simplified rows
-let private toSimpleRows (count : int) (input : BitArray) =
+let private toSimpleRows  (headerCount : int) (input : BitArray) =
+    let rowcount = input.Count
     // Simplified truth table has each row specified unlike the full truth table where the count can be calculated from the rows
     let rows = 
-        [0..(count - 1)]
+        [0..(rowcount - 1)]
         |> List.map (fun x -> 
             x 
-            |> BitarrayUtility.IntToBits count
+            |> BitarrayUtility.IntToBits headerCount
             |> BitarrayUtility.BitToSeq
             |> Seq.map (fun y -> Some(y))
             |> Seq.toArray)
