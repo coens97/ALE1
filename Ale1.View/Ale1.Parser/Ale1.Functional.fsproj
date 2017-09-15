@@ -50,7 +50,7 @@
   </Choose>
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
-	<Compile Include="BitarrayUtility.fs" />
+    <Compile Include="BitarrayUtility.fs" />
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="TextToTree.fs" />
     <None Include="Script.fsx" />
@@ -59,7 +59,7 @@
     <Compile Include="TreeToDot.fs" />
     <Compile Include="TreeToTruthTable.fs" />
     <Compile Include="RandomTree.fs" />
-    
+    <Compile Include="TruthTableSimplifier.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />

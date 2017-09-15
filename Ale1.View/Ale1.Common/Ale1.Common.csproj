@@ -30,6 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FSharp.Core, Version=4.4.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -45,6 +46,8 @@
     <Compile Include="TreeNode\OperandValue.cs" />
     <Compile Include="TreeNode\TreeOperand.cs" />
     <Compile Include="TreeNode\TreeVariable.cs" />
+    <Compile Include="TruthTable\SimpleTruthTable.cs" />
+    <Compile Include="TruthTable\SimpleTruthTableRow.cs" />
     <Compile Include="TruthTable\TruthTable.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
