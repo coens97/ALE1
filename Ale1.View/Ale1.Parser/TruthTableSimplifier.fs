@@ -2,6 +2,7 @@
 
 open System.Collections
 open Ale1.Common.TruthTable
+open System.Security.Cryptography.X509Certificates
 
 // From the full bitarray result to simplified rows
 let private toSimpleRows  (headerCount : int) (input : BitArray) =
@@ -23,20 +24,39 @@ let private toSimpleRows  (headerCount : int) (input : BitArray) =
         new SimpleTruthTableRow(Variables = x, Result = y))
     |> Seq.toList
 
-let rec private iterate (a : int) (b : int) (count : int) (rows : SimpleTruthTableRow list) =
-    let newRows = rows
+// Slice 2 elements out of array
+let sliceRow (a : int) (b : int) (row : Option<bool>[]) =
+    [0..(row.Length - 1)]
+    |> List.where (fun x -> x <> a && x <> b)
+    |> List.map (fun x -> row.[x])
+    |> List.toArray
+let private simplify (a : int) (count : int) (rows : SimpleTruthTableRow list) =
+    let q = rows.Head.Variables
+    let trueRows = 
+        rows
+        |> List.where (fun x -> x.Variables.[a] = Some(true))
+
+    let otherRows = 
+        [0..(count - 2)]
+        |> List.map (fun x -> 
+            if x >= a then (a, x + 1) else (a, x))
+        |> List.map (fun (x, y) -> 
+            trueRows
+            |> List.map (fun z -> (sliceRow x y z.Variables, z.Result)))
+        
+    rows
+let rec private iterate (a : int) (count : int) (rows : SimpleTruthTableRow list) =
+    let newRows = 
+        simplify a count rows
 
     // Call next iteration
-    if b + 1 = count then
-        if a + 2 = count then
-            newRows
-        else
-            iterate (a + 1) (b + 1) count newRows
+    if a + 1 = count then
+        newRows
     else
-        iterate a (b + 1) count newRows
+        iterate (a + 1) count newRows
 
 let private simplifyRows (count : int) (rows : SimpleTruthTableRow list) = 
-    iterate 0 1 count rows
+    iterate 0 count rows
 
 let toSimpleTruthTable (table : TruthTable) = 
     let headerCount = table.Headers.Length
