@@ -92,6 +92,8 @@ namespace Ale1.View
 
             dataGridTruth.Columns.Clear();
             dataGridTruth.Items.Clear();
+            dataGridSimpleTruth.Columns.Clear();
+            dataGridSimpleTruth.Items.Clear();
             // Show hex
             textBoxTruthTable.Text = BitarrayUtility.BitsToHex(truthtable.Values);
             textBoxInfix.Text = TreeToText.ToTextInfix(tree);

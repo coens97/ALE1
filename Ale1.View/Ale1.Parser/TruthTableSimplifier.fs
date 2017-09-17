@@ -31,6 +31,7 @@ let sliceRow (a : int) (b : int) (row : Option<bool>[]) =
     |> List.map (fun x -> row.[x])
     |> List.toArray
 
+// Insert 2 elements back into array
 let insertInRow (a : int) (aValue : bool option) (b : int) (bValue : bool option) (row : Option<bool>[]) =
     let (low, lowValue, high, highValue) = if a < b then (a, aValue, b, bValue) else (b, bValue,a, aValue)
     [0..(row.Length + 1)]
@@ -57,34 +58,37 @@ let private simplify (a : int) (count : int) (rows : SimpleTruthTableRow list) =
     let trueRows = 
         rows
         |> List.where (fun x -> x.Variables.[a] = Some(true))
-
+    
+    let otherRows = 
+        rows
+        |> List.where (fun x -> x.Variables.[a] <> Some(true))
+    
     let simplifiedRows = 
         [0..(count - 2)]
         |> List.map (fun x -> 
             if x >= a then (a, x + 1) else (a, x))
         // Created pairs like (1,0)  (1,2) (1,3)...
-        |> List.map (fun (x, y) -> 
+        |> List.collect (fun (x, y) -> 
             trueRows
             |> List.map (fun z -> (sliceRow x y z.Variables, z.Variables, z.Result)) // Slice columns, collumn x is true, collumn y can be both
             |> List.groupBy (fun (k, _, _) -> rowToString k) // group by the same row, except for collumn x and y
-            |> List.map (fun (_, rows) -> 
+            |> List.collect (fun (_, rows) -> 
                 let simplifyable = 
                     rows
                     |> List.exists(fun (_slicedrow, _row, result) -> not result)
                     |> not
                 if simplifyable then
-                    rows
-                    |> List.map (fun (_slicedrow, row, result) ->
-                        new SimpleTruthTableRow(Variables = row, Result = result))
+                    let (slicedRow, _, _) = rows.Head
+                    let simplerRow = insertInRow x (Some(true)) y None slicedRow
+                    [new SimpleTruthTableRow(Variables = simplerRow, Result = true)]
                 else
                     rows
                     |> List.map (fun (_slicedrow, row, result) ->
                         new SimpleTruthTableRow(Variables = row, Result = result))
                 )
             )
-        //|> List.groupBy (fun (x, _, _) -> x)
-        
-    rows
+    simplifiedRows @ otherRows
+
 let rec private iterate (a : int) (count : int) (rows : SimpleTruthTableRow list) =
     let newRows = 
         simplify a count rows
@@ -95,14 +99,11 @@ let rec private iterate (a : int) (count : int) (rows : SimpleTruthTableRow list
     else
         iterate (a + 1) count newRows
 
-let private simplifyRows (count : int) (rows : SimpleTruthTableRow list) = 
-    iterate 0 count rows
-
 let toSimpleTruthTable (table : TruthTable) = 
     let headerCount = table.Headers.Length
     let rows = 
         toSimpleRows headerCount table.Values
-        |> simplifyRows headerCount
+        |> iterate 0 headerCount
         |> List.toArray
 
     new SimpleTruthTable(Headers = table.Headers, Rows = rows)
