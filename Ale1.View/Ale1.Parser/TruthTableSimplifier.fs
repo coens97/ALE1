@@ -3,6 +3,8 @@
 open System.Collections
 open Ale1.Common.TruthTable
 open System.Security.Cryptography.X509Certificates
+open System.Windows.Markup
+open System.Linq
 
 // From the full bitarray result to simplified rows
 let private toSimpleRows  (headerCount : int) (input : BitArray) =
@@ -24,11 +26,33 @@ let private toSimpleRows  (headerCount : int) (input : BitArray) =
         new SimpleTruthTableRow(Variables = x, Result = y))
     |> Seq.toList
 
+// Slice 1 element out of array
+let sliceSingleRow (a : int) (row : Option<bool>[]) =
+    [0..(row.Length - 1)]
+    |> List.where (fun x -> x <> a)
+    |> List.map (fun x -> row.[x])
+    |> List.toArray
 // Slice 2 elements out of array
 let sliceRow (a : int) (b : int) (row : Option<bool>[]) =
     [0..(row.Length - 1)]
     |> List.where (fun x -> x <> a && x <> b)
     |> List.map (fun x -> row.[x])
+    |> List.toArray
+
+// Slice 2 elements out of array
+let sliceRowReturn (a : int) (b : int) (roworiginal : Option<bool>[] * SimpleTruthTableRow) =
+    let (row,original) = roworiginal
+    (sliceRow a b row, original, row.[a], row.[b])
+
+// Insert 1 element back into array
+let insertSingleInRow (a : int) (aValue : bool option) (row : Option<bool>[]) =
+    [0..(row.Length)]
+    |> List.map (fun x ->
+        match x with
+        | i when i < a -> row.[x]
+        | i when i = a -> aValue
+        | _ -> row.[x - 1]
+        )
     |> List.toArray
 
 // Insert 2 elements back into array
@@ -45,6 +69,7 @@ let insertInRow (a : int) (aValue : bool option) (b : int) (bValue : bool option
         )
     |> List.toArray
 
+
 let rowToString (row: Option<bool>[]) =
     row
     |> Array.map(fun x ->
@@ -54,11 +79,48 @@ let rowToString (row: Option<bool>[]) =
         | None -> "*")
     |> String.concat ""
 
+// Merge combineses results with both *
+// 1 *
+// 0 *
+// * 1
+// * 1 --> * *
+let private merge (a : int) (count : int) (rows : SimpleTruthTableRow list) =
+    if count > 2 then
+        let slicedRow = 
+            rows
+            |> List.map (fun x -> (sliceSingleRow a x.Variables, x))
+        let max = count-2
+        // Create sequence like (0,1) (0,2) (1,2)
+        [0..max]
+        |> List.collect (fun x ->
+            [(x+1)..max]
+            |> List.map(fun y -> (x,y)))
+        |> List.fold (fun r1 (x,y) -> 
+            r1
+            |> List.map(fun q -> sliceRowReturn x y q)
+            |> List.groupBy (fun (row, _fullrow, _vala, _valb) -> rowToString row)
+            |> List.fold (fun r2 (_key, r) -> 
+                let anyA = r |> List.exists(fun (_,_,aval,_) -> aval = None)
+                let anyB = r |> List.exists(fun (_,_,_,bval) -> bval = None)
+                let (sliced,_,_,_) = r.Head
+                if anyA && anyB then
+                    let newRow = insertInRow x None y None sliced
+                    let tableRow = new SimpleTruthTableRow(Variables = (insertSingleInRow a (Some(true)) newRow), Result = true) // Assuming true result
+                    [(newRow, tableRow)] @ r2
+                    |> List.where (fun (_,full) -> 
+                        r |> List.exists (fun (_,m,_,_) -> Enumerable.SequenceEqual(m.Variables, full.Variables)) |> not)
+                else
+                    r2) r1
+            ) slicedRow
+        |> List.map(fun (_sl, res) -> res)
+    else
+        rows
+
 let private simplify (a : int) (count : int) (rows : SimpleTruthTableRow list) =
     let trueRows = 
         rows
         |> List.where (fun x -> x.Variables.[a] = Some(true))
-
+    
     let simplifiedRows = 
         [0..(count - 2)]
         |> List.map (fun x -> 
@@ -104,6 +166,8 @@ let toSimpleTruthTable (table : TruthTable) =
     let rows = 
         toSimpleRows headerCount table.Values
         |> iterate headerCount
+        |> List.groupBy (fun x -> rowToString x.Variables) // Ugly way of doing distinct
+        |> List.map (fun (x,y) -> y.Head)
         |> List.toArray
 
     new SimpleTruthTable(Headers = table.Headers, Rows = rows)
