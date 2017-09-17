@@ -98,13 +98,13 @@ let private merge (a : int) (count : int) (rows : SimpleTruthTableRow list) =
         |> List.fold (fun r1 (x,y) -> 
             r1
             |> List.map(fun q -> sliceRowReturn x y q)
-            |> List.groupBy (fun (row, fullrow, _vala, _valb) -> 
-                String.concat "" [(rowToString row); (if fullrow.Result then "1" else "0")]) // Group by same result and other collumns
+            |> List.groupBy (fun (row, _fullrow, _vala, _valb) -> rowToString row) // Group by same result and other collumns
             |> List.fold (fun r2 (_key, r) -> 
                 let anyA = r |> List.exists(fun (_,_,aval,_) -> aval = None)
                 let anyB = r |> List.exists(fun (_,_,_,bval) -> bval = None)
+                let allResultTrue = r |> List.exists(fun (_,theRow,_,_) -> theRow.Result = false) |> not
                 let (sliced,_,_,_) = r.Head
-                if anyA && anyB then
+                if anyA && anyB && allResultTrue then
                     let newRow = insertInRow x None y None sliced
                     let tableRow = new SimpleTruthTableRow(Variables = (insertSingleInRow a (Some(true)) newRow), Result = true) // Assuming true result
                     [(newRow, tableRow)] @ r2
@@ -159,6 +159,12 @@ let private iterate (count : int) (rows : SimpleTruthTableRow list) =
     let simplifiedRows = 
         [0..(count - 1)]
         |> List.collect(fun x -> simplify x count rows)
+
+    """let mergedRows = 
+        [0..(count - 1)]
+        |> List.fold(fun acc x -> 
+            merge x count acc
+            ) simplifiedRows"""//another merge is not possible
     [zeros] @ simplifiedRows
 
 let toSimpleTruthTable (table : TruthTable) = 
