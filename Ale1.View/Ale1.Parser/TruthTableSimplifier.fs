@@ -121,31 +121,30 @@ let private simplify (a : int) (count : int) (rows : SimpleTruthTableRow list) =
         rows
         |> List.where (fun x -> x.Variables.[a] = Some(true))
     
-    let simplifiedRows = 
-        [0..(count - 2)]
-        |> List.map (fun x -> 
-            if x >= a then (a, x + 1) else (a, x))
-        // Created pairs like (1,0)  (1,2) (1,3)...
-        |> List.collect (fun (x, y) -> 
-            trueRows
-            |> List.map (fun z -> (sliceRow x y z.Variables, z.Variables, z.Result)) // Slice columns, collumn x is true, collumn y can be both
-            |> List.groupBy (fun (k, _, _) -> rowToString k) // group by the same row, except for collumn x and y
-            |> List.collect (fun (_, rows) -> 
-                let simplifyable = 
-                    rows
-                    |> List.exists(fun (_slicedrow, _row, result) -> not result)
-                    |> not
-                if simplifyable then
-                    let (slicedRow, _, _) = rows.Head
-                    let simplerRow = insertInRow x (Some(true)) y None slicedRow
-                    [new SimpleTruthTableRow(Variables = simplerRow, Result = true)]
-                else
-                    rows
-                    |> List.map (fun (_slicedrow, row, result) ->
-                        new SimpleTruthTableRow(Variables = row, Result = result))
-                )
+    [0..(count - 2)]
+    |> List.map (fun x -> 
+        if x >= a then (a, x + 1) else (a, x))
+    // Created pairs like (1,0)  (1,2) (1,3)...
+    |> List.collect (fun (x, y) -> 
+        trueRows
+        |> List.map (fun z -> (sliceRow x y z.Variables, z.Variables, z.Result)) // Slice columns, collumn x is true, collumn y can be both
+        |> List.groupBy (fun (k, _, _) -> rowToString k) // group by the same row, except for collumn x and y
+        |> List.collect (fun (_, rows) -> 
+            let simplifyable = 
+                rows
+                |> List.exists(fun (_slicedrow, _row, result) -> not result)
+                |> not
+            if simplifyable then
+                let (slicedRow, _, _) = rows.Head
+                let simplerRow = insertInRow x (Some(true)) y None slicedRow
+                [new SimpleTruthTableRow(Variables = simplerRow, Result = true)]
+            else
+                rows
+                |> List.map (fun (_slicedrow, row, result) ->
+                    new SimpleTruthTableRow(Variables = row, Result = result))
             )
-    simplifiedRows
+        )
+    |> merge a count 
 
 let private iterate (count : int) (rows : SimpleTruthTableRow list) =
     // All zeros have to be added seperately
