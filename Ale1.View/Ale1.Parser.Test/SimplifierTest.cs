@@ -64,7 +64,10 @@ namespace Ale1.Parser.Test
                     new [] { FSharpOption<bool>.Some(false), FSharpOption<bool>.Some(true), FSharpOption<bool>.Some(false), FSharpOption<bool>.Some(true)}),
                 new Tuple<int, int, FSharpOption<bool>[]>(
                     1,0,
-                    new [] { FSharpOption<bool>.Some(false), FSharpOption<bool>.Some(true), FSharpOption<bool>.Some(false), FSharpOption<bool>.Some(true)})
+                    new [] { FSharpOption<bool>.Some(false), FSharpOption<bool>.Some(true), FSharpOption<bool>.Some(false), FSharpOption<bool>.Some(true)}),
+                new Tuple<int, int, FSharpOption<bool>[]>(
+                    3,1,
+                    new [] { FSharpOption<bool>.Some(false), FSharpOption<bool>.Some(true), FSharpOption<bool>.Some(false), FSharpOption<bool>.Some(true), FSharpOption<bool>.Some(false), FSharpOption<bool>.Some(true)})
             };
             //TruthTableSimplifier.sliceRow(0,1, test)
             foreach (var row in tests)

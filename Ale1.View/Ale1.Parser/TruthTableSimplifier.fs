@@ -32,14 +32,14 @@ let sliceRow (a : int) (b : int) (row : Option<bool>[]) =
     |> List.toArray
 
 let insertInRow (a : int) (aValue : bool option) (b : int) (bValue : bool option) (row : Option<bool>[]) =
-    let (low, high) = if a < b then (a,b) else (b,a)
+    let (low, lowValue, high, highValue) = if a < b then (a, aValue, b, bValue) else (b, bValue,a, aValue)
     [0..(row.Length + 1)]
     |> List.map (fun x ->
         match x with
         | i when i < low -> row.[x]
-        | i when i = a -> aValue
+        | i when i = low -> lowValue
         | i when i < high -> row.[x - 1]
-        | i when i = high -> bValue
+        | i when i = high -> highValue
         | _ -> row.[x - 2]
         )
     |> List.toArray
