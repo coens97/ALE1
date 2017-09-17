@@ -58,11 +58,7 @@ let private simplify (a : int) (count : int) (rows : SimpleTruthTableRow list) =
     let trueRows = 
         rows
         |> List.where (fun x -> x.Variables.[a] = Some(true))
-    
-    let otherRows = 
-        rows
-        |> List.where (fun x -> x.Variables.[a] <> Some(true))
-    
+
     let simplifiedRows = 
         [0..(count - 2)]
         |> List.map (fun x -> 
@@ -87,23 +83,27 @@ let private simplify (a : int) (count : int) (rows : SimpleTruthTableRow list) =
                         new SimpleTruthTableRow(Variables = row, Result = result))
                 )
             )
-    simplifiedRows @ otherRows
+    simplifiedRows
 
-let rec private iterate (a : int) (count : int) (rows : SimpleTruthTableRow list) =
-    let newRows = 
-        simplify a count rows
-
-    // Call next iteration
-    if a + 1 = count then
-        newRows
-    else
-        iterate (a + 1) count newRows
+let private iterate (count : int) (rows : SimpleTruthTableRow list) =
+    // All zeros have to be added seperately
+    let zeros = 
+        rows
+        |> List.find (fun x -> 
+            x.Variables
+            |> Array.exists (fun y -> y = Some(true))
+            |> not)
+    
+    let simplifiedRows = 
+        [0..(count - 1)]
+        |> List.collect(fun x -> simplify x count rows)
+    [zeros] @ simplifiedRows
 
 let toSimpleTruthTable (table : TruthTable) = 
     let headerCount = table.Headers.Length
     let rows = 
         toSimpleRows headerCount table.Values
-        |> iterate 0 headerCount
+        |> iterate headerCount
         |> List.toArray
 
     new SimpleTruthTable(Headers = table.Headers, Rows = rows)
