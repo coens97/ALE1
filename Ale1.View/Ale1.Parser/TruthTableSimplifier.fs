@@ -117,6 +117,23 @@ let private merge (a : int) (count : int) (rows : SimpleTruthTableRow list) =
     else
         rows
 
+// Merge last combinations which could be merged like
+// 1 *
+// 1 0 --> 1 *
+let private lastMerge (count : int) (rows : SimpleTruthTableRow list) =
+    [0..(count - 1)]
+    |> List.fold (fun (r : SimpleTruthTableRow list) i ->
+        r
+        |> List.map (fun x -> sliceSingleRow i x.Variables, x.Variables.[i], x)
+        |> List.groupBy (fun (k,_,_) -> rowToString k) // group by the same row, except for collumn x and y
+        |> List.collect (fun (_,r1) -> 
+            let anyStar = r1 |> List.tryFind(fun (_,v ,_) -> v = None)
+            match anyStar with
+            | Some (_,_,original) -> [original]
+            | None -> r1 |> List.map (fun (_,_,original) -> original)
+            )
+    ) rows
+
 let private simplify (a : int) (count : int) (rows : SimpleTruthTableRow list) =
     let trueRows = 
         rows
@@ -160,12 +177,10 @@ let private iterate (count : int) (rows : SimpleTruthTableRow list) =
         [0..(count - 1)]
         |> List.collect(fun x -> simplify x count rows)
 
-    """let mergedRows = 
-        [0..(count - 1)]
-        |> List.fold(fun acc x -> 
-            merge x count acc
-            ) simplifiedRows"""//another merge is not possible
-    [zeros] @ simplifiedRows
+    let mergedRows =
+        lastMerge count simplifiedRows
+
+    [zeros] @ mergedRows
 
 let toSimpleTruthTable (table : TruthTable) = 
     let headerCount = table.Headers.Length
