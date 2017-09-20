@@ -12,6 +12,7 @@ namespace Ale1.Common.TreeNode
         Implication,
         BiImplication,
         And,
-        Or
+        Or,
+        Nand
     }
 }

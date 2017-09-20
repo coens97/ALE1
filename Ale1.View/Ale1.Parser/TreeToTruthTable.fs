@@ -55,6 +55,10 @@ let private TestLogic (nodeValue : OperandValue) (values : bool * bool) =
         match values with
         | (false, false) -> false
         | (_, _) -> true
+    | OperandValue.Nand ->
+        match values with
+        | (true, true) -> false
+        | (_, _) -> true
 let rec private IterateTestTree (inputTree : ITreeNode) (headerToValue : Generic.IDictionary<string, bool>) : bool =
     match inputTree with
     | :? TreeVariable as v -> headerToValue.[v.Name]

@@ -11,6 +11,7 @@ let private operandToText(operand : OperandValue) : string =
     | OperandValue.BiImplication -> "="
     | OperandValue.And -> "&"
     | OperandValue.Or -> "|"
+    | OperandValue.Nand -> "%"
     | _ -> raise (new ArgumentException("Can't recognise enumuration value of OperandValue when parsing tree")) // No match
 
 // Itteration is a recursive function which "walks through" the tree

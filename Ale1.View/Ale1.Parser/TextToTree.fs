@@ -14,6 +14,7 @@ let private (|PrefixOperand|_|) (s:char list) = // Returns both the operand what
     | '=' :: '(' ::  tail -> Some(OperandValue.BiImplication, tail)
     | '&' :: '(' ::  tail -> Some(OperandValue.And, tail)
     | '|' :: '(' ::  tail -> Some(OperandValue.Or, tail)
+    | '%' :: '(' ::  tail -> Some(OperandValue.Nand, tail)
     | _ -> None // Didn't match any operator
 
 let rec private splitVariable (s: char list) : char list * char list = // Function will take string as a variable until a , or ) is found
