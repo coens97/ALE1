@@ -174,8 +174,8 @@ let maskMerge (count : int) (rows : SimpleTruthTableRow list) =
     ) rows
 let checkTautology (count : int) (rows : SimpleTruthTableRow list) =
     let isTautology = rows |> List.forall(fun x -> x.Result)
-    if isTautology then
-        let values = [0..(count-1)] |> List.map(fun _ -> Option<bool>.None) |> List.toArray
+    if isTautology && rows.Length > 1 then
+        let values = [0..(count-1)] |> List.map(fun _ -> Some true) |> List.toArray
         [new SimpleTruthTableRow(Variables = values, Result = true)]
     else
         rows
