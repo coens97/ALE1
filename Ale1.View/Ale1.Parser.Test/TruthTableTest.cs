@@ -1,10 +1,16 @@
 ﻿using Ale1.Functional;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Cache;
+using System.Runtime.Serialization.Json;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace Ale1.Parser.Test
 {
@@ -147,6 +153,48 @@ namespace Ale1.Parser.Test
                 Assert.AreEqual(test.Item2, bits,
                     $"Truthtable is not as expected for {test.Item1}");
             }
+        }
+
+        public string GetRequest(string url)
+        {
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            HttpRequestCachePolicy noCachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore);
+            request.CachePolicy = noCachePolicy;
+            try
+            {
+                var response = request.GetResponse();
+                using (var responseStream = response.GetResponseStream())
+                {
+                    var reader = new StreamReader(responseStream, Encoding.UTF8);
+                    return reader.ReadToEnd();
+                }
+            }
+            catch (WebException ex)
+            {
+                var errorResponse = ex.Response;
+                using (var responseStream = errorResponse.GetResponseStream())
+                {
+                    var reader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
+                    var errorText = reader.ReadToEnd();
+                }
+                throw;
+            }
+        }
+
+        [TestMethod]
+        public void TestTruthTableOthers()
+        {
+            var response = GetRequest("https://raw.githubusercontent.com/lyubomirdimov/AleProps/master/truthTableTestvectors.json");
+            var objects = JsonConvert.DeserializeObject<Dictionary<string,string>>(response);
+            foreach (var test in objects)
+            {
+                var tree = TextToTree.Parse(test.Key);
+                var truthtable = TreeToTruthTable.CreateTruthTable(tree);
+                var hex = BitarrayUtility.BitsToHex(truthtable.Values);
+                Assert.AreEqual(test.Value, hex,
+                    $"Truthtable is not as expected for {test.Key}");
+            }
+            Assert.IsFalse(true);
         }
     }
 }
