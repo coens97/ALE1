@@ -45,7 +45,7 @@ let TruthTableToDisjunctive (input: TruthTable) =
             x 
             |> BitarrayUtility.IntToBits count
             |> BitarrayUtility.BitToSeq
-            |> Seq.rev // Shamelessly DOUBLE SWAP
+            //|> Seq.rev // Shamelessly DOUBLE SWAP
             )
         |> List.zip results
 
