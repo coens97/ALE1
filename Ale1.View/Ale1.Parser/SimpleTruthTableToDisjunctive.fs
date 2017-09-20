@@ -26,7 +26,7 @@ let rec private andStatements (variables : (string * (bool option)) list) =
 let private readRow (bits : SimpleTruthTableRow) (headers : string []) =
     bits.Variables
     |> Array.toList
-    |> List.rev
+    //|> List.rev
     |> List.zip [0..(headers.Length - 1)]
     |> List.map (fun (x,v) -> (headers.[x], v))
     |> andStatements

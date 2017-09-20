@@ -3,7 +3,6 @@
 open System.Collections
 open Ale1.Common.TruthTable
 open System.Linq
-open System.Security.Cryptography.X509Certificates
 open System
 
 // From the full bitarray result to simplified rows
@@ -16,7 +15,7 @@ let private toSimpleRows  (headerCount : int) (input : BitArray) =
             x 
             |> BitarrayUtility.IntToBits headerCount
             |> BitarrayUtility.BitToSeq
-            |> Seq.rev // Shamelessly DOUBLE SWAP
+            //|> Seq.rev // Shamelessly DOUBLE SWAP
             |> Seq.map (fun y -> Some(y))
             |> Seq.toArray)
     // Merge the rows with the results
