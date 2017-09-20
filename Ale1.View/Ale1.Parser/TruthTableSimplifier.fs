@@ -174,12 +174,10 @@ let maskMerge (count : int) (rows : SimpleTruthTableRow list) =
             r
     ) rows
 let checkTautology (count : int) (rows : SimpleTruthTableRow list) =
-    let isTautology = 
-        rows
-        |> List.forall(fun x -> x.Result)
+    let isTautology = rows |> List.forall(fun x -> x.Result)
     if isTautology then
-        let rows = [0..(count-1)] |> List.map(fun _ -> Option<bool>.None) |> List.toArray
-        [new SimpleTruthTableRow(Variables = rows, Result = true)]
+        let values = [0..(count-1)] |> List.map(fun _ -> Option<bool>.None) |> List.toArray
+        [new SimpleTruthTableRow(Variables = values, Result = true)]
     else
         rows
 let private simplify (a : int) (count : int) (rows : SimpleTruthTableRow list) =
@@ -233,9 +231,7 @@ let private iterate (count : int) (rows : SimpleTruthTableRow list) =
 
     let doubleMergeRows = 
         maskMerge count mergedRows
-        //|> checkTautology count
-
-    [zeros] @ doubleMergeRows
+    checkTautology count ([zeros] @  doubleMergeRows)
 
 let toSimpleTruthTable (table : TruthTable) = 
     let headerCount = table.Headers.Length
