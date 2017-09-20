@@ -2,8 +2,6 @@
 
 open System.Collections
 open Ale1.Common.TruthTable
-open System.Security.Cryptography.X509Certificates
-open System.Windows.Markup
 open System.Linq
 
 // From the full bitarray result to simplified rows
@@ -16,11 +14,13 @@ let private toSimpleRows  (headerCount : int) (input : BitArray) =
             x 
             |> BitarrayUtility.IntToBits headerCount
             |> BitarrayUtility.BitToSeq
+            |> Seq.rev // Shamelessly DOUBLE SWAP
             |> Seq.map (fun y -> Some(y))
             |> Seq.toArray)
     // Merge the rows with the results
     input
     |> BitarrayUtility.BitToSeq 
+    |> Seq.rev // Shamelessly DOUBLE SWAP
     |> Seq.zip rows 
     |> Seq.map (fun (x, y) -> 
         new SimpleTruthTableRow(Variables = x, Result = y))
@@ -188,7 +188,7 @@ let toSimpleTruthTable (table : TruthTable) =
         toSimpleRows headerCount table.Values
         |> iterate headerCount
         |> List.groupBy (fun x -> rowToString x.Variables) // Ugly way of doing distinct
-        |> List.map (fun (x,y) -> y.Head)
+        |> List.map (fun (_x,y) -> y.Head)
         |> List.toArray
 
     new SimpleTruthTable(Headers = table.Headers, Rows = rows)
