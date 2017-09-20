@@ -97,6 +97,8 @@ namespace Ale1.View
             // Show hex
             textBoxTruthTable.Text = BitarrayUtility.BitsToHex(truthtable.Values);
             textBoxInfix.Text = TreeToText.ToTextInfix(tree);
+            // Show disjunctive
+            textBoxTruthTableDisjunctive.Text = TruthTableToDisjunctive.TruthTableToDisjunctive(truthtable);
             // Add headers to datagrid
             var headerId = 0;
             foreach (var header in truthtable.Headers)
