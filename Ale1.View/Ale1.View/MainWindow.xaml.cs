@@ -137,7 +137,7 @@ namespace Ale1.View
             }
             // simple truth table
             var simpleTruthtable = TruthTableSimplifier.toSimpleTruthTable(truthtable);
-
+            textBoxSimpleTruthTableDisjunctive.Text = SimpleTruthTableToDisjunctive.TruthTableToDisjunctive(simpleTruthtable);
             foreach (var row in simpleTruthtable.Rows)
             {
                 var rowValues = new string[headerCount + 1];

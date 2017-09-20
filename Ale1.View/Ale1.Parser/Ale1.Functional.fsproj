@@ -61,6 +61,7 @@
     <Compile Include="RandomTree.fs" />
     <Compile Include="TruthTableSimplifier.fs" />
     <Compile Include="TruthTableToDisjunctive.fs" />
+    <Compile Include="SimpleTruthTableToDisjunctive.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
