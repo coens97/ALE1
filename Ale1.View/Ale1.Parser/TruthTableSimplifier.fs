@@ -4,6 +4,7 @@ open System.Collections
 open Ale1.Common.TruthTable
 open System.Linq
 open System.Security.Cryptography.X509Certificates
+open System
 
 // From the full bitarray result to simplified rows
 let private toSimpleRows  (headerCount : int) (input : BitArray) =
@@ -134,6 +135,7 @@ let private lastMerge (count : int) (rows : SimpleTruthTableRow list) =
             | None -> r1 |> List.map (fun (_,_,original) -> original)
             )
     ) rows
+
 // Even more merging
 // * 1 * 
 // 0 1 0
@@ -170,8 +172,16 @@ let maskMerge (count : int) (rows : SimpleTruthTableRow list) =
             newRows @ [ row ] @ (r |> List.where(fun x -> not x.Result))
         else
             r
-        ) rows 
-
+    ) rows
+let checkTautology (count : int) (rows : SimpleTruthTableRow list) =
+    let isTautology = 
+        rows
+        |> List.forall(fun x -> x.Result)
+    if isTautology then
+        let rows = [0..(count-1)] |> List.map(fun _ -> Option<bool>.None) |> List.toArray
+        [new SimpleTruthTableRow(Variables = rows, Result = true)]
+    else
+        rows
 let private simplify (a : int) (count : int) (rows : SimpleTruthTableRow list) =
     let trueRows = 
         rows
@@ -221,7 +231,9 @@ let private iterate (count : int) (rows : SimpleTruthTableRow list) =
             lastMerge count r
             ) simplifiedRows
 
-    let doubleMergeRows = maskMerge count mergedRows
+    let doubleMergeRows = 
+        maskMerge count mergedRows
+        //|> checkTautology count
 
     [zeros] @ doubleMergeRows
 
@@ -233,5 +245,4 @@ let toSimpleTruthTable (table : TruthTable) =
         |> List.groupBy (fun x -> rowToString x.Variables) // Ugly way of doing distinct
         |> List.map (fun (_x,y) -> y.Head)
         |> List.toArray
-
     new SimpleTruthTable(Headers = table.Headers, Rows = rows)
