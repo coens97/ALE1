@@ -3,6 +3,7 @@
 open System.Collections
 open Ale1.Common.TruthTable
 open System.Linq
+open System.Security.Cryptography.X509Certificates
 
 // From the full bitarray result to simplified rows
 let private toSimpleRows  (headerCount : int) (input : BitArray) =
@@ -133,6 +134,43 @@ let private lastMerge (count : int) (rows : SimpleTruthTableRow list) =
             | None -> r1 |> List.map (fun (_,_,original) -> original)
             )
     ) rows
+// Even more merging
+// * 1 * 
+// 0 1 0
+let maskMerge (count : int) (rows : SimpleTruthTableRow list) =
+    rows
+    //|> List.zip rows // Make cartesion product rows x rows
+    |> List.fold (fun (r : SimpleTruthTableRow list) row ->
+        if row.Result = true then
+            let masks = 
+                row.Variables
+                |> Array.toList
+                |> List.zip [0..(count - 1)]
+                |> List.where (fun (_x,v)-> v = None)
+                |> List.map (fun (x,_v)-> x)
+            
+            let newRows = 
+                r
+                |> List.where(fun x -> x.Result)
+                |> List.where(fun x ->
+                    [0..(count - 1)]
+                    |> List.forall(fun y ->
+                        if masks |> List.contains y then
+                            true
+                        else
+                            if x.Variables.[y] = row.Variables.[y] then
+                                true
+                            else
+                                false
+                    )
+                    |> not
+                )
+            
+            // it's own row get deleted during this
+            newRows @ [ row ] @ (r |> List.where(fun x -> not x.Result))
+        else
+            r
+        ) rows 
 
 let private simplify (a : int) (count : int) (rows : SimpleTruthTableRow list) =
     let trueRows = 
@@ -178,9 +216,14 @@ let private iterate (count : int) (rows : SimpleTruthTableRow list) =
         |> List.collect(fun x -> simplify x count rows)
 
     let mergedRows =
-        lastMerge count simplifiedRows
+        [0..(count - 1)]
+        |> List.fold (fun (r : SimpleTruthTableRow list) _i ->
+            lastMerge count r
+            ) simplifiedRows
 
-    [zeros] @ mergedRows
+    let doubleMergeRows = maskMerge count mergedRows
+
+    [zeros] @ doubleMergeRows
 
 let toSimpleTruthTable (table : TruthTable) = 
     let headerCount = table.Headers.Length

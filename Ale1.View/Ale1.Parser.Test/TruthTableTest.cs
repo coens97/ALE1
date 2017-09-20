@@ -194,7 +194,6 @@ namespace Ale1.Parser.Test
                 Assert.AreEqual(test.Value, hex,
                     $"Truthtable is not as expected for {test.Key}");
             }
-            Assert.IsFalse(true);
         }
     }
 }
