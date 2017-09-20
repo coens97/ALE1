@@ -10,6 +10,7 @@ let IntToBits (count : int) (n : int) : BitArray =
 let BitToSeq (inputBits : BitArray) = 
     [0..(inputBits.Length - 1)] // Shamelessly making a "for loop"
     |> Seq.map(fun x-> inputBits.Get(x))
+    |> Seq.rev // Shamelessly reverse the bits
 
 let BitsToString (inputBits : BitArray) : string = 
     inputBits
@@ -30,6 +31,7 @@ let BitsToHex (inputBits : BitArray) : string =
 
 let StringToBits (inputString : string) : BitArray = 
     [for c in inputString -> c] // To chars
+    |> Seq.rev // shamelessly reverse
     |> Seq.map(fun x-> x = '1') // To booleans
     |> Seq.toArray // To bool array
     |> BitArray // To bits

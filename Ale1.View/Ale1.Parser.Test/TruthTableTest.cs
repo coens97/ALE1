@@ -37,8 +37,8 @@ namespace Ale1.Parser.Test
         {
             var tests = new Tuple<int, int, string>[] // Digit, length, expected
             {
-                new Tuple<int, int, string>(5, 4, "1010"),
-                new Tuple<int, int, string>(5, 10, "1010000000"),
+                new Tuple<int, int, string>(5, 4, "0101"),
+                new Tuple<int, int, string>(5, 10, "0000000101"),
                 new Tuple<int, int, string>(1, 1, "1"),
                 new Tuple<int, int, string>(0, 1, "0"),
                 new Tuple<int, int, string>(7, 3, "111")
@@ -80,8 +80,8 @@ namespace Ale1.Parser.Test
             // testbits are alphabetical
             var tests = new Tuple<string, string>[]
             {
-                new Tuple<string, string>(string.Join("", "10100010".Reverse()), "A2"), // Test from document is reversed 
-                new Tuple<string, string>("10", "01"),
+                new Tuple<string, string>("10100010", "A2"), // Test from document is reversed 
+                new Tuple<string, string>("01", "01"),
                 new Tuple<string, string>("101", "05"),
                 new Tuple<string, string>("11111111", "FF"),
                 new Tuple<string, string>("111111111", "FF01")
@@ -130,13 +130,13 @@ namespace Ale1.Parser.Test
             // testbits are alphabetical
             var tests = new Tuple<string, string>[]
             {
-                new Tuple<string, string>("&(a,b)", "0001"),
-                new Tuple<string, string>("|(a,b)", "0111"),
-                new Tuple<string, string>("~(a)", "10"),
+                new Tuple<string, string>("&(a,b)", "1000"),
+                new Tuple<string, string>("|(a,b)", "1110"),
+                new Tuple<string, string>("~(a)", "01"),
                 new Tuple<string, string>(">(a,b)", "1011"),
                 new Tuple<string, string>("=(a,b)", "1001"),
-                new Tuple<string, string>("&(|(a,a),b)", "0001"),
-                new Tuple<string, string>("&(=(a,b),c)", "00001001")
+                new Tuple<string, string>("&(|(a,a),b)", "1000"),
+                new Tuple<string, string>("&(=(a,b),c)", "10000010")
             };
 
             foreach (var test in tests)
