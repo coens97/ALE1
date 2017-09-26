@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Ale1.View"
         mc:Ignorable="d"
-        Title="Ale1" Height="446.512" Width="525">
+        Title="Ale1" Height="487.194" Width="525">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
@@ -34,6 +34,8 @@
                     <TextBox x:Name="textBoxTruthTableDisjunctive" Height="23" Margin="10,149,10,0" TextWrapping="Wrap" VerticalAlignment="Top" IsReadOnly="True"/>
                     <Label x:Name="label_Copy2" Content="Simple truth disjunctive" HorizontalAlignment="Left" Margin="10,177,0,0" VerticalAlignment="Top"/>
                     <TextBox x:Name="textBoxSimpleTruthTableDisjunctive" Height="23" Margin="10,208,10,0" TextWrapping="Wrap" VerticalAlignment="Top" IsReadOnly="True"/>
+                    <Label x:Name="label_Copy3" Content="Nandified" HorizontalAlignment="Left" Margin="10,236,0,0" VerticalAlignment="Top"/>
+                    <TextBox x:Name="textBoxNandified" Height="23" Margin="10,267,10,0" TextWrapping="Wrap" VerticalAlignment="Top" IsReadOnly="True"/>
 
                 </Grid>
             </TabItem>

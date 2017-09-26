@@ -99,6 +99,8 @@ namespace Ale1.View
             textBoxInfix.Text = TreeToText.ToTextInfix(tree);
             // Show disjunctive
             textBoxTruthTableDisjunctive.Text = TruthTableToDisjunctive.TruthTableToDisjunctive(truthtable);
+            // Nandified
+            textBoxNandified.Text = TreeToText.ToText(NandifyTree.Nandify(tree));
             // Add headers to datagrid
             var headerId = 0;
             foreach (var header in truthtable.Headers)
