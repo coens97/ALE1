@@ -60,6 +60,7 @@
     <Compile Include="SimplifierTest.cs" />
     <Compile Include="TruthTableTest.cs" />
     <Compile Include="DisjunctiveTest.cs" />
+    <Compile Include="NandifyTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

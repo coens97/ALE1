@@ -19,7 +19,7 @@ let rec private itterate (input: ITreeNode) =
             upcast new TreeOperand(NodeValue = OperandValue.Nand, Left = left, Right = right)
         | OperandValue.Implication ->
             let left = new TreeOperand(NodeValue = OperandValue.Not, Left = itterate o.Left)
-            upcast new TreeOperand(NodeValue = OperandValue.Nand, Left = left, Right = itterate o.Right)
+            itterate (new TreeOperand(NodeValue = OperandValue.Or, Left = left, Right = itterate o.Right))
         | OperandValue.BiImplication ->
             let leftIt = itterate o.Left
             let rightIt = itterate o.Right
@@ -27,7 +27,7 @@ let rec private itterate (input: ITreeNode) =
                 Left = new TreeOperand(NodeValue = OperandValue.Not, Left = leftIt), 
                 Right = new TreeOperand(NodeValue = OperandValue.Not, Left = rightIt))
             let right = new TreeOperand(NodeValue = OperandValue.And, Left = leftIt, Right = rightIt)
-            upcast new TreeOperand(NodeValue = OperandValue.Or, Left = left, Right = right)
+            itterate (new TreeOperand(NodeValue = OperandValue.Or, Left = left, Right = right))
         
 
 let Nandify (input: ITreeNode) =
