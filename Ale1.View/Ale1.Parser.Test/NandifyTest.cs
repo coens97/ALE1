@@ -24,7 +24,10 @@ namespace Ale1.Parser.Test
                 var tree = TextToTree.Parse(test.Item1);
                 var nandified = NandifyTree.Nandify(tree);
                 var result = TreeToText.ToText(nandified);
-                Assert.AreEqual(test.Item2, result);
+                Assert.AreEqual(test.Item2, result, "Not expected proposition");
+                var hashcode = BitarrayUtility.BitsToHex(TreeToTruthTable.CreateTruthTable(tree).Values);
+                var nandhashcode = BitarrayUtility.BitsToHex(TreeToTruthTable.CreateTruthTable(nandified).Values);
+                Assert.AreEqual(hashcode, nandhashcode, "Truthtables are not the same");
             }
         }
     }
