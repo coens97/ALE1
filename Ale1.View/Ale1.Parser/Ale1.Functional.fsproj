@@ -62,6 +62,7 @@
     <Compile Include="TruthTableSimplifier.fs" />
     <Compile Include="TruthTableToDisjunctive.fs" />
     <Compile Include="SimpleTruthTableToDisjunctive.fs" />
+    <Compile Include="NandifyTree.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
