@@ -2,7 +2,6 @@
 
 open Ale1.Common.TreeNode
 
-
 let rec private itterate (input: ITreeNode) =
     match input with
     | :? TreeVariable as v -> input // When node match with a variable only return that
@@ -18,6 +17,17 @@ let rec private itterate (input: ITreeNode) =
             let left = new TreeOperand(NodeValue = OperandValue.Not, Left = itterate o.Left)
             let right = new TreeOperand(NodeValue = OperandValue.Not, Left = itterate o.Right)
             upcast new TreeOperand(NodeValue = OperandValue.Nand, Left = left, Right = right)
+        | OperandValue.Implication ->
+            let left = new TreeOperand(NodeValue = OperandValue.Not, Left = itterate o.Left)
+            upcast new TreeOperand(NodeValue = OperandValue.Nand, Left = left, Right = itterate o.Right)
+        | OperandValue.BiImplication ->
+            let leftIt = itterate o.Left
+            let rightIt = itterate o.Right
+            let left = new TreeOperand(NodeValue = OperandValue.And, 
+                Left = new TreeOperand(NodeValue = OperandValue.Not, Left = leftIt), 
+                Right = new TreeOperand(NodeValue = OperandValue.Not, Left = rightIt))
+            let right = new TreeOperand(NodeValue = OperandValue.And, Left = leftIt, Right = rightIt)
+            upcast new TreeOperand(NodeValue = OperandValue.Or, Left = left, Right = right)
         
 
 let Nandify (input: ITreeNode) =
