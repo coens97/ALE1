@@ -15,7 +15,8 @@ namespace Ale1.Parser.Test
                 new Tuple<string, string>("&(a,b)", "&(a,b)"),
                 new Tuple<string, string>("%(a,b)", "%(a,b)"),
                 new Tuple<string, string>("|(a,b)", "%(~(a),~(b))"),
-                //new Tuple<string, string>(">(a,b)", "&(~(a),~(b))")
+                new Tuple<string, string>(">(a,b)", "%(~(~(a)),~(b))"),
+                new Tuple<string, string>("=(a,b)", "%(~(&(~(a),~(b))),~(&(a,b)))")
             };
 
             foreach (var test in tests)
