@@ -26,88 +26,55 @@ let private toSimpleRows  (headerCount : int) (input : BitArray) =
         new SimpleTruthTableRow(Variables = x, Result = y))
     |> Seq.toList
 
-let rowToString (row: Option<bool>[]) =
-    row
-    |> Array.map(fun x ->
-        match x with
-        | Some(true) -> "1"
-        | Some(false) -> "0"
-        | None -> "*")
-    |> String.concat ""
+let private makeColumnCombinations(count: int) =
+    // Create all collumn combinations
+    // e.g. count = 3
+    // (0,1) (0,2) (1,0) (1,2)
+    [0..(count - 1)]
+    |> List.collect (fun x -> 
+        [0..(count - 2)]
+        |> List.map(fun a -> 
+            if x >= a then (a, x + 1) else (a, x))
+     )
 
-let distinctRows (rows: SimpleTruthTableRow list) =
-    rows
-    |> List.groupBy (fun x -> rowToString x.Variables) // Ugly way of doing distinct
-    |> List.map (fun (_x,y) -> y.Head)
+let private sameRow (a :int) (b :int) (mainRow: SimpleTruthTableRow) (compareRow: SimpleTruthTableRow) = 
+    [0..(mainRow.Variables.Length - 1)] 
+    |> List.toArray 
+    |> Array.zip3 mainRow.Variables compareRow.Variables // Combine index with values of both arrays
+    |> Array.exists(fun (p,q,i) -> (i = a || i = b || p.IsNone || q.IsNone || p.Value = q.Value) |> not)
+    |> not
 
-let similarRow (a: SimpleTruthTableRow) (b: SimpleTruthTableRow) (skipCollumn: int) =
-    if a.Result <> b.Result then
-        false
-    else
-        ([0..(a.Variables.Length-1)] |> List.toArray) // collumn indexes
-        |> Array.zip3 a.Variables b.Variables
-        |> Array.exists (fun (x, y, collumn) -> 
-            (collumn = skipCollumn || x.IsNone || y.IsNone || x.Value = y.Value) |> not)
-        |> not
+let rec checkCollumns (count :int) (rows : SimpleTruthTableRow list) (collumns: (int * int) list) =
+    let rec checkRows (a :int) (b :int) (tailCollumns: (int * int) list) (rows : SimpleTruthTableRow list) (tailRows: SimpleTruthTableRow list) =
+        match tailRows with
+        | row::newTailRows ->
+            if row.Variables.[a].IsNone then
+                checkRows a b collumns rows newTailRows // skip row with variable None
+            else
+                let aValue = row.Variables.[a].Value
+                let similarRows = rows |> List.where(fun x -> sameRow a b row x)
+                let sameRows = similarRows |> List.where(fun x -> x.Variables.[a].Value = aValue)
+                let optionalRows = similarRows |> List.where(fun x -> x.Variables.[a].IsNone)
+                let allResultSame = 
+                    (sameRows @ optionalRows) 
+                    |> List.exists(fun x -> (x.Result = row.Result) |> not)
+                    |> not
+                if allResultSame then
+                    let otherRows = (rows |> List.where(fun x -> (sameRow a b row x) |> not)) @ (similarRows |> List.where(fun x -> x.Variables.[a].Value <> aValue))
+                    let newVariables = row.Variables |> Array.mapi(fun i x -> if i = b then None else x) // add collumn with star
+                    let newRow = new SimpleTruthTableRow(Variables = newVariables, Result = row.Result)
+                    rows
+                else
+                    checkRows a b collumns rows newTailRows
+        | [] -> checkCollumns count rows tailCollumns
 
-let sameRow (a: SimpleTruthTableRow) (b: SimpleTruthTableRow)  =
-    if a.Result <> b.Result then
-        false
-    else
-        a.Variables
-        |> Array.zip b.Variables
-        |> Array.exists (fun (x, y) -> (x = y) |> not)
-        |> not
-
-let containsRow (rows :SimpleTruthTableRow list) (row: SimpleTruthTableRow) = 
-    rows
-    |> List.exists (fun x -> sameRow x row)
+    match collumns with
+    | (a,b)::tail -> checkRows a b tail rows rows
+    | [] -> rows // checked all collumn combinations
 
 let rec private iterate (count : int) (rows : SimpleTruthTableRow list) =
-    let  simplifiedRows = new List<SimpleTruthTableRow>() // Using mutable in F# :^)
-    let rowsToBeRemoved = Set.empty<int>
-
-    let unchangedRows = 
-        rows
-        |> List.zip [0..(rows.Length - 1)] //Combine row with the index
-        |> List.where(fun (index,row) -> 
-            if rowsToBeRemoved.Contains(index) then
-                false // Delete current row
-            else
-                [0..(count-1)] // List of column indexes
-                |> List.exists (fun collumn ->
-                    let simplifyAble = 
-                        [(index + 1)..(rows.Length - 1)] // List of indexes after current row
-                        |> List.map (fun x -> (x, rows.[x])) // Combine row with index again
-                        |> List.exists (fun (secondIndex, secondRow) ->
-                            let similar = similarRow row secondRow collumn
-                            if similar then
-                                rowsToBeRemoved.Add(secondIndex)
-                                true
-                            else
-                                false
-                            )
-                    if simplifyAble then//move simplifyable up
-                        let rowVars = 
-                            row.Variables
-                            |> Array.zip ([0..(count - 1)] |> List.toArray)
-                            |> Array.map (fun (i,c)-> if i = collumn then None else c)
-                        let newRow = new SimpleTruthTableRow(Variables = rowVars, Result = row.Result)
-                        if containsRow rows newRow |> not && containsRow (simplifiedRows |> List.ofSeq) newRow |> not then
-                            simplifiedRows.Add(newRow)
-                        false // Delete current row
-                    else
-                        true // Keep row
-                )
-            )
-        |> List.map(fun (_,r) -> r) // Remove row index
-
-    // Combine old and new rows
-    if simplifiedRows.Count = 0 then
-        unchangedRows
-    else
-        let mergedrows = unchangedRows @ (simplifiedRows |> List.ofSeq)
-        iterate count mergedrows
+    makeColumnCombinations count
+    |> checkCollumns count rows
 
 let toSimpleTruthTable (table : TruthTable) = 
     let headerCount = table.Headers.Length

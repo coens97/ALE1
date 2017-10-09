@@ -241,3 +241,45 @@ let toSimpleTruthTable (table : TruthTable) =
         |> List.map (fun (_x,y) -> y.Head)
         |> List.toArray
     new SimpleTruthTable(Headers = table.Headers, Rows = rows)
+// more code i made some point
+let rowToString (row: Option<bool>[]) =
+    row
+    |> Array.map(fun x ->
+        match x with
+        | Some(true) -> "1"
+        | Some(false) -> "0"
+        | None -> "*")
+    |> String.concat ""
+
+let distinctRows (rows: SimpleTruthTableRow list) =
+    rows
+    |> List.groupBy (fun x -> rowToString x.Variables) // Ugly way of doing distinct
+    |> List.map (fun (_x,y) -> y.Head)
+
+let isAllStars (row: SimpleTruthTableRow) =
+    row.Variables |> Array.exists(fun x -> x.IsSome) |> not
+
+let similarRow (a: SimpleTruthTableRow) (b: SimpleTruthTableRow) (skipCollumn: int) =
+    if a.Result <> b.Result || 
+        isAllStars a || // if only stars
+        isAllStars b then
+        false
+    else
+        ([0..(a.Variables.Length-1)] |> List.toArray) // collumn indexes
+        |> Array.zip3 a.Variables b.Variables
+        |> Array.exists (fun (x, y, collumn) -> 
+            (collumn = skipCollumn || x.IsNone || y.IsNone || x.Value = y.Value) |> not)
+        |> not
+
+let sameRow (a: SimpleTruthTableRow) (b: SimpleTruthTableRow)  =
+    if a.Result <> b.Result then
+        false
+    else
+        a.Variables
+        |> Array.zip b.Variables
+        |> Array.exists (fun (x, y) -> (x = y) |> not)
+        |> not
+
+let containsRow (rows :SimpleTruthTableRow list) (row: SimpleTruthTableRow) = 
+    rows
+    |> List.exists (fun x -> sameRow x row)
