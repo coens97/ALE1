@@ -28,8 +28,8 @@ let rec private itterate (input: ITreeNode) =
             let leftIt = itterate o.Left
             let rightIt = itterate o.Right
             let left = itterate(new TreeOperand(NodeValue = OperandValue.And, 
-                Left = itterate (new TreeOperand(NodeValue = OperandValue.Not, Left = leftIt)), 
-                Right = itterate (new TreeOperand(NodeValue = OperandValue.Not, Left = rightIt))))
+                    Left = itterate (new TreeOperand(NodeValue = OperandValue.Not, Left = leftIt)), 
+                    Right = itterate (new TreeOperand(NodeValue = OperandValue.Not, Left = rightIt))))
             let right = itterate (new TreeOperand(NodeValue = OperandValue.And, Left = leftIt, Right = rightIt))
             itterate (new TreeOperand(NodeValue = OperandValue.Or, Left = left, Right = right))
         
