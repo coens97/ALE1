@@ -44,35 +44,36 @@ let private sameRow (a :int) (b :int) (mainRow: SimpleTruthTableRow) (compareRow
     |> Array.exists(fun (p,q,i) -> (i = a || i = b || p.IsNone || q.IsNone || p.Value = q.Value) |> not)
     |> not
 
-let rec checkCollumns (count :int) (rows : SimpleTruthTableRow list) (collumns: (int * int) list) =
-    let rec checkRows (a :int) (b :int) (tailCollumns: (int * int) list) (rows : SimpleTruthTableRow list) (tailRows: SimpleTruthTableRow list) =
-        match tailRows with
-        | row::newTailRows ->
-            if row.Variables.[a].IsNone then
-                checkRows a b collumns rows newTailRows // skip row with variable None
-            else
-                let aValue = row.Variables.[a].Value
-                let similarRows = rows |> List.where(fun x -> sameRow a b row x)
-                let sameRows = similarRows |> List.where(fun x -> x.Variables.[a].Value = aValue)
-                let optionalRows = similarRows |> List.where(fun x -> x.Variables.[a].IsNone)
-                let allResultSame = 
-                    (sameRows @ optionalRows) 
-                    |> List.exists(fun x -> (x.Result = row.Result) |> not)
-                    |> not
-                if allResultSame then
-                    let otherRows = (rows |> List.where(fun x -> (sameRow a b row x) |> not)) @ (similarRows |> List.where(fun x -> x.Variables.[a].Value <> aValue))
-                    let newVariables = row.Variables |> Array.mapi(fun i x -> if i = b then None else x) // add collumn with star
-                    let newRow = new SimpleTruthTableRow(Variables = newVariables, Result = row.Result)
-                    rows
-                else
-                    checkRows a b collumns rows newTailRows
-        | [] -> checkCollumns count rows tailCollumns
-
-    match collumns with
-    | (a,b)::tail -> checkRows a b tail rows rows
-    | [] -> rows // checked all collumn combinations
-
 let rec private iterate (count : int) (rows : SimpleTruthTableRow list) =
+    let rec checkCollumns (count :int) (rows : SimpleTruthTableRow list) (collumns: (int * int) list) =
+        let rec checkRows (a :int) (b :int) (tailCollumns: (int * int) list) (rows : SimpleTruthTableRow list) (tailRows: SimpleTruthTableRow list) =
+            match tailRows with
+            | row::newTailRows ->
+                if row.Variables.[a].IsNone then
+                    checkRows a b collumns rows newTailRows // skip row with variable None
+                else
+                    let aValue = row.Variables.[a].Value
+                    let similarRows = rows |> List.where(fun x -> sameRow a b row x)
+                    let sameRows = similarRows |> List.where(fun x -> x.Variables.[a].Value = aValue)
+                    let optionalRows = similarRows |> List.where(fun x -> x.Variables.[a].IsNone)
+                    let allResultSame = 
+                        (sameRows @ optionalRows) 
+                        |> List.exists(fun x -> (x.Result = row.Result) |> not)
+                        |> not
+                    if allResultSame then
+                        let otherRows = (rows |> List.where(fun x -> (sameRow a b row x) |> not)) @ (similarRows |> List.where(fun x -> x.Variables.[a].Value <> aValue))
+                        let newVariables = row.Variables |> Array.mapi(fun i x -> if i = b then None else x) // add collumn with star
+                        let newRow = new SimpleTruthTableRow(Variables = newVariables, Result = row.Result)
+                        iterate count (otherRows @ optionalRows @ [newRow])
+                    else
+                        checkRows a b collumns rows newTailRows
+            | [] -> checkCollumns count rows tailCollumns
+            //End: checkRows
+
+        match collumns with
+        | (a,b)::tail -> checkRows a b tail rows rows
+        | [] -> rows // checked all collumn combinations
+        // End: checkCollumns
     makeColumnCombinations count
     |> checkCollumns count rows
 
