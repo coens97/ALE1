@@ -25,10 +25,10 @@ namespace Ale1.Parser.Test
                 //"|(a,|(~(b),b))", // tautology cant be tested this way
                 //"&(a,&(~(b),b))", // not tautology 
                 "=(|(a,b),c)",
-                //">(>(a,b),c)",
-                //">(>(a,b),>(c,d))",
-                //">(=(|(a,b),c),&(d,e))",
-                //"~(>(=(|(a,b),c),&(d,e)))"
+                ">(>(a,b),c)",
+                ">(>(a,b),>(c,d))",
+                ">(=(|(a,b),c),&(d,e))",
+                "~(>(=(|(a,b),c),&(d,e)))"
             };
             foreach (var test in tests)
             {

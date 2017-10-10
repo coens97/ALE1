@@ -57,7 +57,7 @@ let private sameRow (a :int) (mainRow: SimpleTruthTableRow) (compareRow: SimpleT
     [0..(mainRow.Variables.Length - 1)] 
     |> List.toArray 
     |> Array.zip3 mainRow.Variables compareRow.Variables // Combine index with values of both arrays
-    |> Array.exists(fun (p,q,i) -> (i = a || p.IsNone || q.IsNone || p.Value = q.Value) |> not)
+    |> Array.exists(fun (p,q,i) -> (i = a || p = q) |> not) // p.IsNone || q.IsNone ||
     |> not
 
 let private findSimilarResults (rows: SimpleTruthTableRow list) (row: SimpleTruthTableRow) (index : int) = 
