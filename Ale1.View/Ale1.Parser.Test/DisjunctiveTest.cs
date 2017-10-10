@@ -20,6 +20,8 @@ namespace Ale1.Parser.Test
                 "=(a,b)",
                 ">(a,b)",
                 "~(>(a,b))",
+                "%(a,b)",
+                "=(a,&(b,c))",
                 //"|(a,|(~(b),b))", // tautology cant be tested this way
                 //"&(a,&(~(b),b))", // not tautology 
                 "=(|(a,b),c)",
