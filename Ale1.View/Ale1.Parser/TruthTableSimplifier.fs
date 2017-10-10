@@ -40,6 +40,19 @@ let distinctRows (rows: SimpleTruthTableRow list) =
     |> List.groupBy (fun x -> rowToString x.Variables) // Ugly way of doing distinct
     |> List.map (fun (_x,y) -> y.Head)
 
+let identicalRow (a: SimpleTruthTableRow) (b: SimpleTruthTableRow)  =
+    if a.Result <> b.Result then
+        false
+    else
+        a.Variables
+        |> Array.zip b.Variables
+        |> Array.exists (fun (x, y) -> (x = y) |> not)
+        |> not
+
+let containsRow (rows :SimpleTruthTableRow list) (row: SimpleTruthTableRow) = 
+    rows
+    |> List.exists (fun x -> identicalRow x row)
+
 let private sameRow (a :int) (mainRow: SimpleTruthTableRow) (compareRow: SimpleTruthTableRow) = 
     [0..(mainRow.Variables.Length - 1)] 
     |> List.toArray 
@@ -54,20 +67,24 @@ let private findSimilarResults (rows: SimpleTruthTableRow list) (row: SimpleTrut
         same
         |> List.exists(fun x -> (x.Result = row.Result) |> not)
         |> not
-    (allResultSame && same.Length > 1, others)
+    (allResultSame && same.Length > 1, same, others)
 
 let rec private iterate (rows : SimpleTruthTableRow list) =
+    let toBeAdded = new List<SimpleTruthTableRow>()// Use a mutable list #functional
+    let toBeRemoved = new List<SimpleTruthTableRow>()// Use a mutable list #functional
     let rec checkRow (current : SimpleTruthTableRow list) =
         let rec checkCollumn (row : SimpleTruthTableRow) (t : SimpleTruthTableRow list) (collumn : int list) =
             match collumn with
             | head :: tail ->
-                let (found, others) = findSimilarResults rows row head
+                let (found, same, others) = findSimilarResults rows row head
                 if found then
                     let variables = row.Variables |> Array.mapi(fun i x -> if i = head then None else x) // add collumn with star
                     let row = new SimpleTruthTableRow(Variables = variables, Result = row.Result)
-                    iterate others @ [row]
-                else
-                    checkCollumn row t tail
+                    if containsRow rows row |> not then
+                        toBeAdded.Add(row)
+                        toBeRemoved.AddRange(same)
+                    //iterate (others @ [row])
+                checkCollumn row t tail
             | [] -> checkRow t
         match current with
         | head :: tail ->
@@ -75,6 +92,14 @@ let rec private iterate (rows : SimpleTruthTableRow list) =
             |> checkCollumn head tail 
         | [] -> rows
     checkRow rows
+    if toBeAdded.Count > 0 then
+        let newRows = 
+            rows
+            |> List.where(fun x -> containsRow (toBeRemoved |> List.ofSeq) x |> not)
+        let addedRows = toBeAdded |> List.ofSeq |> distinctRows
+        iterate (newRows @ addedRows)
+    else
+        rows
 
 let toSimpleTruthTable (table : TruthTable) = 
     let headerCount = table.Headers.Length
