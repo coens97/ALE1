@@ -184,7 +184,7 @@ namespace Ale1.Parser.Test
         [TestMethod]
         public void TestTruthTableOthers()
         {
-            var response = GetRequest("https://raw.githubusercontent.com/lyubomirdimov/AleProps/master/truthTableTestvectors.json");
+            var response = GetRequest("https://raw.githubusercontent.com/lyubomirdimov/AleProps/master/PropositionToHashcode.json");
             var objects = JsonConvert.DeserializeObject<Dictionary<string,string>>(response);
             foreach (var test in objects)
             {
