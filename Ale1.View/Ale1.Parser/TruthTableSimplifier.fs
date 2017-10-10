@@ -62,12 +62,11 @@ let private sameRow (a :int) (mainRow: SimpleTruthTableRow) (compareRow: SimpleT
 
 let private findSimilarResults (rows: SimpleTruthTableRow list) (row: SimpleTruthTableRow) (index : int) = 
     let same = rows |> List.where(fun x -> sameRow index row x)
-    let others = rows |> List.where(fun x -> (sameRow index row x) |> not)
     let allResultSame = 
         same
         |> List.exists(fun x -> (x.Result = row.Result) |> not)
         |> not
-    (allResultSame && same.Length > 1, same, others)
+    (allResultSame && same.Length > 1, same)
 
 let rec private iterate (rows : SimpleTruthTableRow list) =
     let toBeAdded = new List<SimpleTruthTableRow>()// Use a mutable list #functional
@@ -76,7 +75,7 @@ let rec private iterate (rows : SimpleTruthTableRow list) =
         let rec checkCollumn (row : SimpleTruthTableRow) (t : SimpleTruthTableRow list) (collumn : int list) =
             match collumn with
             | head :: tail ->
-                let (found, same, others) = findSimilarResults rows row head
+                let (found, same) = findSimilarResults rows row head
                 if found then
                     let variables = row.Variables |> Array.mapi(fun i x -> if i = head then None else x) // add collumn with star
                     let row = new SimpleTruthTableRow(Variables = variables, Result = row.Result)
