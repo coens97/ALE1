@@ -44,10 +44,10 @@ let private makeColumnCombinations(count: int) =
     // Create all collumn combinations
     // e.g. count = 3
     // (0,1) (0,2) (1,2) 
-    [0..(count - 2)]
+    [0..(count - 1)]
     |> List.collect (fun x -> 
-        [(x+1)..(count - 1)]
-        |> List.map(fun a -> (x, a))
+        [(x+1)..(count - 2)]
+        |> List.map(fun a -> if x <= a then (x, a + 1) else (x, a))
      )
 
 let private sameRow (a :int) (b :int) (mainRow: SimpleTruthTableRow) (compareRow: SimpleTruthTableRow) = 
@@ -79,7 +79,7 @@ let rec private iterate (count : int) (rows : SimpleTruthTableRow list) =
                     let (rightOptional, rightSimplify) = findSimilarResults similarRows row b row.Variables.[b].Value
                     match (leftSimplify, rightSimplify) with
                     | (true, true) -> 
-                        let otherRows = 
+                        """let otherRows = 
                             (rows |> List.where(fun x -> (sameRow a b row x) |> not)) @ 
                             (similarRows |> List.where(fun x -> (x.Variables.[a].IsSome && x.Variables.[a].Value <> row.Variables.[a].Value) ||
                                 (x.Variables.[b].IsSome && x.Variables.[b].Value <> row.Variables.[b].Value))) @
@@ -90,7 +90,9 @@ let rec private iterate (count : int) (rows : SimpleTruthTableRow list) =
                         let newRowLeft = new SimpleTruthTableRow(Variables = newVariablesLeft, Result = row.Result)
                         let newVariablesRight = row.Variables |> Array.mapi(fun i x -> if i = b then None else x) // add collumn with star
                         let newRowRight = new SimpleTruthTableRow(Variables = newVariablesRight, Result = row.Result)
-                        iterate count (otherRows @  [newRowLeft;newRowRight])
+                        iterate count (otherRows @  [newRowLeft;newRowRight])"""
+                        // Dont realy trust the code above...didn't gave infinite loop so far
+                        checkRows a b tailCollumns newTailRows
                     | (true, false) -> 
                         let otherRows = (rows |> List.where(fun x -> (sameRow a b row x) |> not)) @ (similarRows |> List.where(fun x -> x.Variables.[a].IsSome && x.Variables.[a].Value <> row.Variables.[a].Value))
                         let newVariables = row.Variables |> Array.mapi(fun i x -> if i = b then None else x) // add collumn with star
