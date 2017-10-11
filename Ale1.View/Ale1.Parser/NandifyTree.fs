@@ -4,7 +4,8 @@ open Ale1.Common.TreeNode
 
 let rec private itterate (input: ITreeNode) =
     match input with
-    | :? TreeVariable as v -> input // When node match with a variable only return that
+    | :? TreeVariable as _v -> input // When node match with a variable only return that
+    | :? TreeValue as _v -> input
     | :? TreeOperand as o->
         match o.NodeValue with // The NOT operand is the only without a right node
         | OperandValue.Not ->

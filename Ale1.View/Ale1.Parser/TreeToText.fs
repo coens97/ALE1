@@ -19,6 +19,7 @@ let private operandToText(operand : OperandValue) : string =
 let rec private iteration (inputTree : ITreeNode) : string list = 
     match inputTree with
     | :? TreeVariable as v -> [ v.Name ] // When node match with a variable only return that
+    | :? TreeValue as v -> [ (if v.Value then "1" else "0") ]
     | :? TreeOperand as o->
         match o.NodeValue with // The NOT operand is the only without a right node
         | OperandValue.Not -> 
@@ -41,6 +42,7 @@ let ToText (inputTree : ITreeNode) : string =
 let rec private iterationInfix (inputTree : ITreeNode) : string list = 
     match inputTree with
     | :? TreeVariable as v -> [ v.Name ] // When node match with a variable only return that
+    | :? TreeValue as v -> [ (if v.Value then "1" else "0") ]
     | :? TreeOperand as o->
         match o.NodeValue with // The NOT operand is the only without a right node
         | OperandValue.Not -> 

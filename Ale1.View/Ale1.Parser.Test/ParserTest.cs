@@ -39,6 +39,7 @@ namespace Ale1.Functional.Test
             var infuxTest = new Tuple<string, string>[]
             {
                 new Tuple<string, string>("~(abc)","~(abc)"),
+                new Tuple<string, string>("&(1,a)","(1&a)"),
                 new Tuple<string, string>("&(abc,bde)","(abc&bde)"),
                 new Tuple<string, string>("&(~(dank memes),|(fontys,think bigger))","(~(dankmemes)&(fontys|thinkbigger))")
             };

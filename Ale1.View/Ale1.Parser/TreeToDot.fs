@@ -19,6 +19,7 @@ let private operandToText(operand : OperandValue) : string =
 let rec private iteration (inputTree : ITreeNode) (n : int) =
     match inputTree with
     | :? TreeVariable as v -> (n, [ "node" + n.ToString() + " [ label = \"" + v.Name + "\" ]" ]) // When node match with a variable only return that
+    | :? TreeValue as v -> (n, ["node" + n.ToString() + " [ label = \"" + (if v.Value then "1" else "0") + "\" ]" ])
     | :? TreeOperand as o->
         match o.NodeValue with // The NOT operand is the only without a right node
         | OperandValue.Not -> 

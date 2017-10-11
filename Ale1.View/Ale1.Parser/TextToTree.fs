@@ -17,6 +17,12 @@ let private (|PrefixOperand|_|) (s:char list) = // Returns both the operand what
     | '%' :: '(' ::  tail -> Some(OperandValue.Nand, tail)
     | _ -> None // Didn't match any operator
 
+let private (|ValueOperand|_|) (s:char list) = // Check if hardcoded value is inside
+    match s with
+    | '0' :: tail  -> Some(false, tail)
+    | '1' ::  tail -> Some(true, tail)
+    | _ -> None // Didn't match any operator
+
 let rec private splitVariable (s: char list) : char list * char list = // Function will take string as a variable until a , or ) is found
     match s with
     | ',':: _tail  -> ([], s) // In these cases return the brace and the , to check later if the correct symbol is used
@@ -33,6 +39,8 @@ let rec private iterate (inputText : char list) : ITreeNode * char list =
         match rest with
         | ')' :: tail -> (tree, tail)
         | _ -> raise (new ArgumentException("Expected a closing brace at: " + charsToString rest)) 
+    | ValueOperand (valueBool, rest) ->
+        (upcast new TreeValue(Value = valueBool), rest)
     | _ -> // String does not start with an operand, so assume it is a variable
         let (variable, tail) = splitVariable inputText
         (upcast new TreeVariable(Name = charsToString variable), tail)

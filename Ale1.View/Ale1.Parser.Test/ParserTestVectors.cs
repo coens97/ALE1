@@ -38,6 +38,36 @@ namespace Ale1.Functional.Test
                             Name = "a"
                         }
                     }),
+                // Basic AND operand with 1
+                new Tuple<string, ITreeNode>(
+                    "&(1,b)",
+                    new TreeOperand
+                    {
+                        NodeValue = OperandValue.And,
+                        Left = new TreeValue
+                        {
+                            Value = true
+                        },
+                        Right = new TreeVariable
+                        {
+                            Name = "b"
+                        }
+                    }),
+                // Basic AND operand with 0
+                new Tuple<string, ITreeNode>(
+                    "&(0,b)",
+                    new TreeOperand
+                    {
+                        NodeValue = OperandValue.And,
+                        Left = new TreeValue
+                        {
+                            Value = false
+                        },
+                        Right = new TreeVariable
+                        {
+                            Name = "b"
+                        }
+                    }),
                 // Combination of all operands
                 new Tuple<string, ITreeNode>(
                     "~(>(=(|(a,b),c),&(d,e)))",

@@ -4,13 +4,13 @@ open Ale1.Common.TreeNode
 open Ale1.Functional.BitarrayUtility
 open System
 open System.Collections
-open System.Runtime.InteropServices
 open Ale1.Common.TruthTable
 
 // Recursively getall tree variables
 let rec private AllTreeVariablesItteration(inputTree : ITreeNode) : string list = 
     match inputTree with
     | :? TreeVariable as v -> [v.Name] // When node match with a variable only return that
+    | :? TreeValue as _a -> []
     | :? TreeOperand as o->
         match o.NodeValue with // The NOT operand is the only without a right node
         | OperandValue.Not -> 
@@ -62,6 +62,7 @@ let private TestLogic (nodeValue : OperandValue) (values : bool * bool) =
 let rec private IterateTestTree (inputTree : ITreeNode) (headerToValue : Generic.IDictionary<string, bool>) : bool =
     match inputTree with
     | :? TreeVariable as v -> headerToValue.[v.Name]
+    | :? TreeValue as v -> v.Value
     | :? TreeOperand as o-> 
     match o.NodeValue with
     | OperandValue.Not -> 
