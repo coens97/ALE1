@@ -26,6 +26,7 @@ let BitsToHex (inputBits : BitArray) : string =
     // byte[] -> string
     bytes
     |> Array.map (fun (x : byte) -> System.String.Format("{0:X2}", x))
+    |> Array.rev
     |> String.concat System.String.Empty
 
 
