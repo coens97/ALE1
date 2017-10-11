@@ -110,6 +110,8 @@ namespace Ale1.Parser.Test
             var tests = new Tuple<string, string, bool>[]
             {
                 new Tuple<string, string, bool>("&(a,b)", "11", true),
+                new Tuple<string, string, bool>("&(a,1)", "1", true),
+                new Tuple<string, string, bool>("&(a,0)", "1", false),
                 new Tuple<string, string, bool>("&(a,b)", "01", false),
                 new Tuple<string, string, bool>("&(a,a)", "1", true),
                 new Tuple<string, string, bool>("~(a)", "1", false),
@@ -137,6 +139,7 @@ namespace Ale1.Parser.Test
             var tests = new Tuple<string, string>[]
             {
                 new Tuple<string, string>("&(a,b)", "1000"),
+                new Tuple<string, string>("&(a,1)", "10"),
                 new Tuple<string, string>("|(a,b)", "1110"),
                 new Tuple<string, string>("~(a)", "01"),
                 new Tuple<string, string>(">(a,b)", "1011"),

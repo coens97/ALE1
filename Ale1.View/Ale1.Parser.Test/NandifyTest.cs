@@ -14,6 +14,7 @@ namespace Ale1.Parser.Test
             {
                 new Tuple<string, string>("&(a,b)", "%(%(a,b),%(a,b))"),
                 new Tuple<string, string>("%(a,b)", "%(a,b)"),
+                new Tuple<string, string>("%(a,1)", "%(a,1)"),
                 new Tuple<string, string>("|(a,b)", "%(%(a,a),%(b,b))"),
                 new Tuple<string, string>(">(a,b)", "%(%(%(a,a),%(a,a)),%(b,b))"),
                 new Tuple<string, string>("=(a,b)", "%(%(%(%(%(a,a),%(b,b)),%(%(a,a),%(b,b))),%(%(%(a,a),%(b,b)),%(%(a,a),%(b,b)))),%(%(%(a,b),%(a,b)),%(%(a,b),%(a,b))))")

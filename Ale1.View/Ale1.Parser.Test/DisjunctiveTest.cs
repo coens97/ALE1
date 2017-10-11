@@ -17,6 +17,7 @@ namespace Ale1.Parser.Test
                 "|(a,|(b,c))",
                 "~(a)",
                 "&(a,b)",
+                "&(1,|(a,b))",
                 "=(a,b)",
                 ">(a,b)",
                 "~(>(a,b))",
