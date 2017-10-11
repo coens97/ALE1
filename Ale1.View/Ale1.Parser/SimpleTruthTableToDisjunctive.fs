@@ -22,6 +22,7 @@ let rec private andStatements (variables : (string * (bool option)) list) =
             Some(["&("] @ (notStatement (v,x)) @ [","] @ recurRes @ [")"])
             | _ -> Some(notStatement (v,x))
         | _ -> andStatements tail
+    | [] -> None
 
 let private readRow (bits : SimpleTruthTableRow) (headers : string []) =
     bits.Variables

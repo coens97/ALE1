@@ -10,6 +10,7 @@ let rec private andStatements (variables : (string * bool) list) =
     | [variable] -> notStatement variable
     | head :: tail -> 
         ["&("] @ (notStatement head) @ [","] @ (andStatements tail) @ [")"]
+    | [] -> []
 
 let private readRow (bits : bool seq) (headers : string []) =
     bits
